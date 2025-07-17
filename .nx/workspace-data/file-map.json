@@ -1,0 +1,315 @@
+{
+  "version": "6.0",
+  "nxVersion": "21.2.4",
+  "pathMappings": {},
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "nonProjectFiles": [
+      {
+        "file": "chat-app/src/app/shared/components/user-list/user-list.component.scss",
+        "hash": "12980852908134775954"
+      },
+      {
+        "file": "back-end/controllers/auth.controller.js",
+        "hash": "2751196456307678658"
+      },
+      {
+        "file": "chat-app/src/theme.less",
+        "hash": "4328193622599512339"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/user-list/user-list.component.html",
+        "hash": "436743016518362780"
+      },
+      {
+        "file": "chat-app/angular.json",
+        "hash": "6947055184980750840"
+      },
+      {
+        "file": "back-end/controllers/message.controller.js",
+        "hash": "16855890591010027731"
+      },
+      {
+        "file": "back-end/routes/message.routes.js",
+        "hash": "6496020088595202771"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/messages/messages.component.html",
+        "hash": "18061143007953998455"
+      },
+      {
+        "file": "back-end/routes/conversation.routes.js",
+        "hash": "15353306290592931497"
+      },
+      {
+        "file": "chat-app/src/app/core/layouts/main-layout/main-layout.component.spec.ts",
+        "hash": "11430705638093132187"
+      },
+      {
+        "file": "chat-app/src/app/core/auth/pages/register/register.component.html",
+        "hash": "15461037395588619933"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/user-list/user-list.component.ts",
+        "hash": "14376174630239975920"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/message/message.component.scss",
+        "hash": "11224645121317723176"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/message/message.component.spec.ts",
+        "hash": "15989680966942851969"
+      },
+      {
+        "file": "chat-app/src/app/core/auth/pages/login/login.component.spec.ts",
+        "hash": "15222502735042189921"
+      },
+      {
+        "file": "chat-app/src/app/app.component.spec.ts",
+        "hash": "5699249495007753372"
+      },
+      {
+        "file": "chat-app/src/app/core/auth/pages/register/register.component.ts",
+        "hash": "13890683044249277502"
+      },
+      {
+        "file": "back-end/controllers/user.controller.js",
+        "hash": "7080415140001977993"
+      },
+      {
+        "file": "chat-app/src/app/app.component.ts",
+        "hash": "17406072575574752326"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/messages/messages.component.scss",
+        "hash": "1434948873252490081"
+      },
+      {
+        "file": "back-end/package-lock.json",
+        "hash": "8487444511656897771"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/sidebar/sidebar.component.html",
+        "hash": "6943825165274610042"
+      },
+      {
+        "file": ".vscode/settings.json",
+        "hash": "12828174575902657768"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/message-input/message-input.component.scss",
+        "hash": "16314415886116204734"
+      },
+      {
+        "file": "chat-app/tsconfig.json",
+        "hash": "1047940026627514556"
+      },
+      {
+        "file": "chat-app/src/app/core/layouts/main-layout/main-layout.component.ts",
+        "hash": "15525828877898626566"
+      },
+      {
+        "file": "chat-app/src/main.ts",
+        "hash": "12246588107753938993"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/messages/messages.component.ts",
+        "hash": "6869688005823318084"
+      },
+      {
+        "file": "chat-app/package-lock.json",
+        "hash": "1398942793254747072"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "12990309872111536764"
+      },
+      {
+        "file": "chat-app/src/styles.scss",
+        "hash": "5195668842064076916"
+      },
+      {
+        "file": "chat-app/src/app/core/auth/pages/register/register.component.spec.ts",
+        "hash": "6877038197976814006"
+      },
+      {
+        "file": "chat-app/README.md",
+        "hash": "4937640774386897516"
+      },
+      {
+        "file": "chat-app/src/app/core/auth/pages/login/login.component.scss",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "chat-app/src/favicon.ico",
+        "hash": "3464744996580215640"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/messages/messages.component.spec.ts",
+        "hash": "1139714518403563380"
+      },
+      {
+        "file": "chat-app/src/app/core/auth/pages/login/login.component.ts",
+        "hash": "6191414875474362247"
+      },
+      {
+        "file": "chat-app/src/app/app.module.ts",
+        "hash": "11374264250582695961"
+      },
+      {
+        "file": "back-end/routes/user.routes.js",
+        "hash": "4752074017225184055"
+      },
+      {
+        "file": "back-end/controllers/conversation.controller.js",
+        "hash": "11826288913408768640"
+      },
+      {
+        "file": "chat-app/src/app/app.component.scss",
+        "hash": "8466879860097639047"
+      },
+      {
+        "file": "back-end/routes/auth.routes.js",
+        "hash": "2238108106789682916"
+      },
+      {
+        "file": ".nx/nxw.js",
+        "hash": "11301648124127104610"
+      },
+      {
+        "file": "chat-app/src/app/core/layouts/main-layout/main-layout.component.html",
+        "hash": "14986856404085625657"
+      },
+      {
+        "file": "chat-app/package.json",
+        "hash": "13956758681570682416"
+      },
+      {
+        "file": "chat-app/src/app/core/auth/pages/login/login.component.html",
+        "hash": "15037950857834361771"
+      },
+      {
+        "file": "back-end/socket/index.js",
+        "hash": "9146719800545694169"
+      },
+      {
+        "file": "back-end/package.json",
+        "hash": "15994280981084950621"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/user-list/user-list.component.spec.ts",
+        "hash": "7562650055056654489"
+      },
+      {
+        "file": "back-end/models/user.model.js",
+        "hash": "3669730697868065539"
+      },
+      {
+        "file": "chat-app/src/app/app-routing.module.ts",
+        "hash": "3477526221050232950"
+      },
+      {
+        "file": "back-end/.env",
+        "hash": "4749394378194800178"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/message/message.component.ts",
+        "hash": "483170480523179205"
+      },
+      {
+        "file": "chat-app/.vscode/extensions.json",
+        "hash": "5331566439708925252"
+      },
+      {
+        "file": "back-end/models/message.model.js",
+        "hash": "6416780489998188453"
+      },
+      {
+        "file": "chat-app/src/index.html",
+        "hash": "9951872518450708486"
+      },
+      {
+        "file": "chat-app/.gitignore",
+        "hash": "13044518069027839699"
+      },
+      {
+        "file": "chat-app/src/app/core/auth/pages/register/register.component.scss",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "chat-app/.vscode/launch.json",
+        "hash": "17038929134016848735"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/sidebar/sidebar.component.ts",
+        "hash": "15893832271084616819"
+      },
+      {
+        "file": "back-end/index.js",
+        "hash": "15043991981990521325"
+      },
+      {
+        "file": "chat-app/src/app/core/layouts/main-layout/main-layout.component.scss",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/message/message.component.html",
+        "hash": "2087310965257287710"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/message-input/message-input.component.ts",
+        "hash": "4636708887964253367"
+      },
+      {
+        "file": "chat-app/src/assets/.gitkeep",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "back-end/middleware/auth.middleware.js",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/sidebar/sidebar.component.spec.ts",
+        "hash": "4610101630782678919"
+      },
+      {
+        "file": "chat-app/.editorconfig",
+        "hash": "6686520031028425313"
+      },
+      {
+        "file": "back-end/models/conversation.model.js",
+        "hash": "16013430011956291058"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/sidebar/sidebar.component.scss",
+        "hash": "2825889702321557181"
+      },
+      {
+        "file": "chat-app/src/app/app.component.html",
+        "hash": "17816966185630879015"
+      },
+      {
+        "file": "chat-app/tsconfig.app.json",
+        "hash": "17337579397915052279"
+      },
+      {
+        "file": "chat-app/.vscode/tasks.json",
+        "hash": "5336636969995539451"
+      },
+      {
+        "file": "chat-app/tsconfig.spec.json",
+        "hash": "15575553540147145788"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/message-input/message-input.component.html",
+        "hash": "10933455273630955328"
+      },
+      {
+        "file": "chat-app/src/app/shared/components/message-input/message-input.component.spec.ts",
+        "hash": "12734762641901847815"
+      }
+    ],
+    "projectFileMap": {}
+  }
+}
