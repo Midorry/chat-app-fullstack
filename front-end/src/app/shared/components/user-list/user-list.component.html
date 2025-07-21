@@ -16,60 +16,44 @@
     </ng-template>
   </div>
 
-  <div class="user-message active">
-    <div class="user-message-row">
-      <nz-badge [nzCount]="5" class="user-badge">
-        <nz-avatar nzShape="square" [nzSize]="48" nzIcon="user"></nz-avatar>
-      </nz-badge>
-      <div class="user-info">
-        <div class="user-header">
-          <h4 class="user-name">Nguyen Van A</h4>
-          <p class="message-time">4m</p>
+  <div *ngIf="userConversation.length > 0; else newUser">
+    <div
+      class="user-message active"
+      *ngFor="let convo of userConversation"
+      (click)="selectConversation(convo._id)"
+    >
+      <div class="user-message-row">
+        <nz-badge [nzCount]="5" class="user-badge">
+          <nz-avatar nzShape="square" [nzSize]="48" nzIcon="user"></nz-avatar>
+        </nz-badge>
+        <div class="user-info">
+          <div class="user-header">
+            <h4 *ngIf="!convo.isGroup">{{ convo.otherMember?.username }}</h4>
+            <h4 *ngIf="convo.isGroup">{{ convo.name }}</h4>
+            <p class="message-time">4m</p>
+          </div>
+          <p class="message-preview">You: {{ convo.lastMessage }}</p>
         </div>
-        <p class="message-preview">You: test long message test long message</p>
       </div>
     </div>
   </div>
-  <div class="user-message">
-    <div class="user-message-row">
-      <nz-badge [nzCount]="5" class="user-badge">
-        <nz-avatar nzShape="square" [nzSize]="48" nzIcon="user"></nz-avatar>
-      </nz-badge>
-      <div class="user-info">
-        <div class="user-header">
-          <h4 class="user-name">Nguyen Van A</h4>
-          <p class="message-time">4m</p>
+
+  <ng-template #newUser>
+    <div
+      class="user-message"
+      *ngFor="let user of allUser"
+      (click)="selectUserToChat(user._id!)"
+    >
+      <div class="user-message-row">
+        <nz-badge [nzCount]="5" class="user-badge">
+          <nz-avatar nzShape="square" [nzSize]="48" nzIcon="user"></nz-avatar>
+        </nz-badge>
+        <div class="user-info">
+          <div class="user-header">
+            <h4 class="user-name">{{ user.username }}</h4>
+          </div>
         </div>
-        <p class="message-preview">You:</p>
       </div>
     </div>
-  </div>
-  <div class="user-message">
-    <div class="user-message-row">
-      <nz-badge [nzCount]="5" class="user-badge">
-        <nz-avatar nzShape="square" [nzSize]="48" nzIcon="user"></nz-avatar>
-      </nz-badge>
-      <div class="user-info">
-        <div class="user-header">
-          <h4 class="user-name">Nguyen Van A</h4>
-          <p class="message-time">4m</p>
-        </div>
-        <p class="message-preview">You:</p>
-      </div>
-    </div>
-  </div>
-  <div class="user-message">
-    <div class="user-message-row">
-      <nz-badge [nzCount]="5" class="user-badge">
-        <nz-avatar nzShape="square" [nzSize]="48" nzIcon="user"></nz-avatar>
-      </nz-badge>
-      <div class="user-info">
-        <div class="user-header">
-          <h4 class="user-name">Nguyen Van A</h4>
-          <p class="message-time">4m</p>
-        </div>
-        <p class="message-preview">You:</p>
-      </div>
-    </div>
-  </div>
+  </ng-template>
 </div>

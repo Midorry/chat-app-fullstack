@@ -10,6 +10,21 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+// GET /api/users/all
+export const getAllUsersExceptMe = async (req, res) => {
+  try {
+    const myId = req.user.id; // Lấy ID từ middleware xác thực JWT
+
+    const users = await User.find({ _id: { $ne: myId } }).select("-password");
+
+    res.status(200).json(users);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Lỗi khi lấy danh sách người dùng", error });
+  }
+};
+
 // Tìm người dùng theo ID
 export const getUserById = async (req, res) => {
   try {

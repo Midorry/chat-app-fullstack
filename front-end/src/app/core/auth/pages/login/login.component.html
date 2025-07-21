@@ -1,1 +1,122 @@
-<p>login works!</p>
+<div
+  style="
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: aliceblue;
+  "
+>
+  <div style="width: 60vw; background-color: white" nz-row>
+    <div nz-col nzSpan="12" style="padding: 40px">
+      <h1>Đăng nhập</h1>
+      <form
+        nz-form
+        [formGroup]="loginForm"
+        class="login-form"
+        (ngSubmit)="submitForm()"
+        nzLayout="vertical"
+      >
+        <nz-form-item style="width: 100%">
+          <nz-form-label
+            [nzSm]="10"
+            [nzXs]="24"
+            nzRequired
+            nzFor="email"
+            style="font-weight: 600"
+            >E-mail</nz-form-label
+          >
+          <nz-form-control
+            [nzSm]="24"
+            [nzXs]="24"
+            [nzErrorTip]="
+                loginForm.get('email')?.hasError('required')&&
+                (loginForm.get('password')?.dirty ||
+                  loginForm.get('password')?.touched)
+                  ? 'Vui lòng nhập email!' 
+                  :(loginForm.get('email')?.errors?.['invalidLogin'] && loginForm.get('email')?.touched)
+                  ? 'Mật khẩu hoặc email sai'
+                  : 'Email không hợp lệ'
+              "
+            style="width: 100%"
+          >
+            <input
+              nz-input
+              formControlName="email"
+              id="email"
+              style="width: 100%; border-radius: 8px; height: 40px"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label
+            [nzSm]="10"
+            [nzXs]="24"
+            nzFor="password"
+            nzRequired
+            style="font-weight: 600"
+            >Mật khẩu</nz-form-label
+          >
+          <nz-form-control
+            [nzSm]="24"
+            [nzXs]="24"
+            [nzErrorTip]="
+              loginForm.get('password')?.hasError('required') &&
+              (loginForm.get('password')?.dirty ||
+                loginForm.get('password')?.touched)
+                ? 'Vui lòng nhập mật khẩu'
+                : loginForm.get('password')?.hasError('minlength') &&
+                  (loginForm.get('password')?.dirty ||
+                    loginForm.get('password')?.touched)
+                ? 'Mật khẩu phải có ít nhất 6 ký tự'
+                : undefined
+            "
+          >
+            <input
+              nz-input
+              type="password"
+              id="password"
+              formControlName="password"
+              style="width: 100%; border-radius: 8px; height: 40px"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <button
+          nzSize="large"
+          nz-button
+          nzType="primary"
+          nzShape="round"
+          class="login-form-button login-form-margin"
+          [nzType]="'primary'"
+          style="width: 100%"
+        >
+          Đăng nhập
+        </button>
+      </form>
+    </div>
+    <div
+      nz-col
+      nzSpan="12"
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #ff4d4f;
+      "
+    >
+      <h1>Chào mừng đến với Todo app</h1>
+      <h3>Bạn không có tài khoản?</h3>
+      <button
+        nz-button
+        nzType="default"
+        nzShape="round"
+        nzSize="large"
+        [routerLink]="['/register']"
+      >
+        Đăng ký
+      </button>
+    </div>
+  </div>
+</div>

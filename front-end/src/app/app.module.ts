@@ -8,8 +8,10 @@ import { en_US } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReactiveFormsModule } from '@angular/forms';
+
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
@@ -18,6 +20,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzFormModule } from 'ng-zorro-antd/form';
 
 import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
 import { MessageComponent } from './shared/components/message/message.component';
@@ -27,6 +30,7 @@ import { MessageInputComponent } from './shared/components/message-input/message
 import { MessagesComponent } from './shared/components/messages/messages.component';
 import { UserListComponent } from './shared/components/user-list/user-list.component';
 import { RegisterComponent } from './core/auth/pages/register/register.component';
+import { AuthInterceptor } from './core/auth/interceptor/auth.interceptor';
 
 registerLocaleData(en);
 
@@ -46,6 +50,7 @@ registerLocaleData(en);
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     NzIconModule,
@@ -56,8 +61,16 @@ registerLocaleData(en);
     NzInputModule,
     NzAvatarModule,
     NzBadgeModule,
+    NzFormModule,
   ],
-  providers: [{ provide: NZ_I18N, useValue: en_US }],
+  providers: [
+    { provide: NZ_I18N, useValue: en_US },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
