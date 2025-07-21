@@ -1,0 +1,22 @@
+<nz-input-group [nzPrefix]="prefixIcon" [nzSuffix]="suffixIcon">
+  <input
+    nz-input
+    placeholder="Your message"
+    [(ngModel)]="messageText"
+    (keyup.enter)="sendMessage()"
+  />
+</nz-input-group>
+
+<ng-template #prefixIcon>
+  <i nz-icon nzType="paper-clip" class="input-icon"></i>
+</ng-template>
+
+<ng-template #suffixIcon>
+  <i nz-icon nzType="audio" class="input-icon"></i>
+  <i
+    nz-icon
+    nzType="send"
+    class="input-icon send-icon"
+    (click)="sendMessage()"
+  ></i>
+</ng-template>

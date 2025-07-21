@@ -1,0 +1,48 @@
+<div class="chat-container">
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <h2>Nguyen Van A</h2>
+      <p>Online</p>
+    </div>
+    <div class="chat-header-right">
+      <i nz-icon nzType="search" nzTheme="outline"></i>
+      <i nz-icon nzType="phone" nzTheme="outline"></i>
+      <i nz-icon nzType="more" nzTheme="outline"></i>
+    </div>
+  </div>
+
+  <!-- Nội dung tin nhắn -->
+  <div class="chat-messages">
+    <div class="message-item">
+      <nz-avatar
+        class="message-avatar"
+        nzShape="square"
+        [nzSize]="48"
+        nzIcon="user"
+      ></nz-avatar>
+      <app-message
+        class="message-bubble"
+        [content]="'Nội dung message'"
+      ></app-message>
+    </div>
+    <div class="message-item my-message">
+      <nz-avatar
+        class="message-avatar"
+        nzShape="square"
+        [nzSize]="48"
+        nzIcon="user"
+      ></nz-avatar>
+      <app-message
+        class="message-bubble"
+        [content]="'Nội dung message'"
+      ></app-message>
+    </div>
+    <!-- thêm nhiều message-item nếu cần -->
+  </div>
+
+  <!-- Ô nhập tin nhắn -->
+  <div class="chat-input">
+    <app-message-input></app-message-input>
+  </div>
+</div>

@@ -1,0 +1,75 @@
+h4,
+p {
+  margin: 0;
+}
+.chat-container {
+  display: block;
+}
+
+.search-wrapper {
+  margin-bottom: 10px;
+}
+
+.search-input {
+  background-color: #dbdcfe;
+  border-radius: 6px;
+}
+.search-input input {
+  background-color: #dbdcfe;
+}
+
+.search-icon {
+  cursor: pointer;
+  color: white;
+}
+
+.user-message {
+  margin-top: 10px;
+  border-radius: 6px;
+  padding: 6px;
+}
+.user-message.active {
+  background-color: #eeeffa;
+}
+
+.user-message-row {
+  display: flex;
+}
+
+.user-badge {
+  margin-right: 12px;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 6px;
+}
+
+.user-name {
+  margin: 0;
+}
+
+.message-time {
+  margin: 0;
+  font-size: 0.85rem;
+  color: gray;
+}
+
+.message-preview {
+  margin: 0;
+  color: #555;
+  font-size: small;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* Số dòng muốn hiển thị tối đa */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 180px; /* hoặc tính theo số dòng * line-height */
+}
