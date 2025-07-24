@@ -7,4 +7,6 @@ import { Component, Input } from '@angular/core';
 })
 export class MessageComponent {
   @Input() content: string = '';
+  @Input() sendTime: string | undefined = '';
+  @Input() username: string | undefined = '';
 }

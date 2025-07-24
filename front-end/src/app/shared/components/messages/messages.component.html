@@ -1,4 +1,4 @@
-<div class="chat-container">
+<div class="chat-container" *ngIf="conversationId" else noConversation>
   <!-- Header -->
   <div class="chat-header">
     <div class="chat-header-left">
@@ -13,36 +13,43 @@
   </div>
 
   <!-- Nội dung tin nhắn -->
-  <div class="chat-messages">
-    <div class="message-item">
-      <nz-avatar
-        class="message-avatar"
-        nzShape="square"
-        [nzSize]="48"
-        nzIcon="user"
-      ></nz-avatar>
-      <app-message
-        class="message-bubble"
-        [content]="'Nội dung message'"
-      ></app-message>
+  <div class="chat-messages-container" *ngIf="conversationId">
+    <div class="chat-messages-list">
+      <div
+        class="message-item"
+        *ngFor="let message of messages$ | async"
+        [ngClass]="{
+          'my-message': message.senderId._id === currentUserId,
+          'other-message': message.senderId._id !== currentUserId
+        }"
+      >
+        <nz-avatar
+          class="message-avatar"
+          nzShape="square"
+          [nzSize]="48"
+          nzIcon="user"
+        ></nz-avatar>
+        <app-message
+          class="message-bubble"
+          [content]="message.content"
+          [username]="message.senderId.username"
+          [sendTime]="message.createdAt"
+        ></app-message>
+      </div>
+      <div #bottomAnchor></div>
     </div>
-    <div class="message-item my-message">
-      <nz-avatar
-        class="message-avatar"
-        nzShape="square"
-        [nzSize]="48"
-        nzIcon="user"
-      ></nz-avatar>
-      <app-message
-        class="message-bubble"
-        [content]="'Nội dung message'"
-      ></app-message>
-    </div>
-    <!-- thêm nhiều message-item nếu cần -->
   </div>
 
   <!-- Ô nhập tin nhắn -->
   <div class="chat-input">
-    <app-message-input></app-message-input>
+    <app-message-input [conversationId]="conversationId"></app-message-input>
   </div>
 </div>
+
+<ng-template #noConversation>
+  <div class="chat-container">
+    <div class="no-conversation">
+      <p>Select a chat to start messaging</p>
+    </div>
+  </div>
+</ng-template>

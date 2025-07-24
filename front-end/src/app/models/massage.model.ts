@@ -1,9 +1,10 @@
 export interface Message {
   _id?: string;
-  conversationId: [];
-  senderId: [];
+  conversationId: string;
+  senderId: { _id: string; username?: string; avatar?: string };
   content: string;
-  type: string;
-  attachments: string;
-  seenBy: [];
+  type?: string;
+  attachments?: string[];
+  seenBy?: string[];
+  createdAt?: string;
 }

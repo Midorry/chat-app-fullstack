@@ -1,4 +1,5 @@
 import Message from "../models/message.model.js";
+import { getIO } from "../socket/index.js";
 
 // Gửi tin nhắn
 export const sendMessage = async (req, res) => {
@@ -14,9 +15,25 @@ export const sendMessage = async (req, res) => {
     });
 
     await message.save();
+
+    await message.populate("senderId", "username");
+
+    const io = getIO();
+    io.to(conversationId).emit("receiveMessage", message);
+
     res.status(201).json(message);
   } catch (err) {
-    res.status(400).json({ error: "Không thể gửi tin nhắn" });
+    console.error("❌ Lỗi khi gửi tin nhắn:", {
+      message: err.message,
+      stack: err.stack,
+      name: err.name,
+      fullError: err,
+    });
+
+    res.status(400).json({
+      error: "Không thể gửi tin nhắn",
+      details: err.message || err,
+    });
   }
 };
 
@@ -25,7 +42,9 @@ export const getMessagesByConversation = async (req, res) => {
   try {
     const messages = await Message.find({
       conversationId: req.params.conversationId,
-    }).populate("senderId", "username avatar");
+    })
+      .sort({ createdAt: 1 })
+      .populate("senderId", "username avatar");
 
     res.json(messages);
   } catch (err) {

@@ -1,8 +1,16 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent {}
+export class SidebarComponent {
+  logout() {
+    // Xử lý logout, ví dụ:
+    localStorage.clear();
+    this.router.navigate(['/login']);
+  }
+  constructor(private router: Router) {}
+}

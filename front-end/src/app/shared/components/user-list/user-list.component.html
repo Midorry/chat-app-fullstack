@@ -4,16 +4,48 @@
       <input
         type="text"
         nz-input
-        placeholder="Tìm kiếm ..."
+        placeholder="Tìm kiếm người dùng..."
         [(ngModel)]="searchValue"
+        (input)="onSearch()"
+        (focus)="onFocus()"
+        (blur)="onBlur()"
       />
     </nz-input-group>
 
     <ng-template #suffixIconSearch>
-      <span (click)="onSearch()" class="search-icon">
+      <span class="search-icon">
         <i nz-icon nzType="search"></i>
       </span>
     </ng-template>
+
+    <!-- Danh sách người dùng phù hợp -->
+    <div
+      class="user-list"
+      *ngIf="
+        isSearchFocused && searchValue.trim() !== '' && filteredUsers.length > 0
+      "
+    >
+      <div
+        class="user-item"
+        *ngFor="let user of filteredUsers"
+        (click)="selectUserToChat(user._id!)"
+      >
+        <nz-avatar nzIcon="user" class="user-avatar"></nz-avatar>
+        <span class="user-name">{{ user.username }}</span>
+      </div>
+    </div>
+
+    <!-- Nếu không tìm thấy -->
+    <div
+      class="no-user"
+      *ngIf="
+        isSearchFocused &&
+        searchValue.trim() !== '' &&
+        filteredUsers.length === 0
+      "
+    >
+      <p>Không tìm thấy người dùng nào.</p>
+    </div>
   </div>
 
   <div *ngIf="userConversation.length > 0; else newUser">

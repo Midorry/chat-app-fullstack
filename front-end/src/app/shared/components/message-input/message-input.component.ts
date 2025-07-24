@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Message } from 'src/app/models/massage.model';
+import { MessageService } from 'src/app/services/message.service';
+import { SocketService } from 'src/app/services/socket.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-message-input',
@@ -6,12 +10,39 @@ import { Component } from '@angular/core';
   styleUrls: ['./message-input.component.scss'],
 })
 export class MessageInputComponent {
+  @Input() conversationId: string | null = null;
   messageText = '';
 
   sendMessage() {
     if (!this.messageText.trim()) return;
-    console.log('Sending:', this.messageText);
-    // TODO: gửi message
-    this.messageText = '';
+    // console.log('Sending:', this.messageText);
+    const conversationId = this.conversationId;
+    if (!conversationId) return;
+    const content = this.messageText;
+    const senderId = this.userService.getLocalUserId();
+    if (!senderId) {
+      console.error('Không tìm thấy senderId trong localStorage.');
+      return;
+    }
+    const messageData: Message = {
+      conversationId: conversationId,
+      senderId: { _id: senderId },
+      content,
+    };
+    this.messageService.sendMessage(messageData).subscribe({
+      next: (res) => {
+        console.log('send message', res);
+        // this.socketService.emit('sendMessage', res);
+        this.messageText = '';
+      },
+      error: (err) => {
+        console.error('Lỗi khi gửi tin nhắn: ', err);
+      },
+    });
   }
+  constructor(
+    private messageService: MessageService,
+    private userService: UserService,
+    private socketService: SocketService
+  ) {}
 }

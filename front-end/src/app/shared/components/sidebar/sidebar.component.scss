@@ -38,3 +38,30 @@ nz-content {
   background-color: var(--bg-color);
   height: 100%;
 }
+
+.menu-sidebar {
+  height: 100vh;
+  .sider-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .menu-list {
+    flex: 1; // đẩy logout xuống dưới
+    overflow-y: auto;
+  }
+
+  .logout-button {
+    color: #fff;
+    padding: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}

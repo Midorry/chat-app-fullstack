@@ -7,12 +7,8 @@ import { Component } from '@angular/core';
 })
 export class MainLayoutComponent {
   selectedConversationId: string | null = null;
-  otherUserId: string | null = null;
 
   onConversationSelected(id: string) {
     this.selectedConversationId = id;
-  }
-  onUserId(id: string) {
-    this.otherUserId = id;
   }
 }

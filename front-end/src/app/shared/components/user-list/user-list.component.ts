@@ -2,7 +2,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { Conversation } from 'src/app/models/conversation.model';
 import { ConversationView } from 'src/app/models/conversationview.model';
 import { User } from 'src/app/models/user.model';
-import { AuthService } from 'src/app/services/auth.service';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -14,31 +13,62 @@ import { UserService } from 'src/app/services/user.service';
 export class UserListComponent {
   searchValue = '';
   allUser: User[] = [];
+  filteredUsers: User[] = [];
+  isSearchFocused = false;
   userConversation: ConversationView[] = [];
   userId = localStorage.getItem('userId');
   @Output() conversationSelected = new EventEmitter<string>();
-  @Output() otherUser = new EventEmitter<string>();
 
   selectConversation(convoId: string) {
     this.conversationSelected.emit(convoId);
   }
   selectUserToChat(userId: string) {
-    this.otherUser.emit(userId);
     this.conversationService.startChat(userId).subscribe((convo) => {
+      console.log(convo);
+
       this.conversationSelected.emit(convo._id); // convo là object vừa được tạo từ backend
+
+      this.conversationService
+        .getUserConversations(this.userService.getLocalUserId()!)
+        .subscribe({
+          next: (res) => {
+            this.userConversation = res;
+            console.log(
+              'danh sách hội thoại người dùng',
+              this.userConversation
+            );
+          },
+          error: (err) => {
+            console.error('Lỗi khi lấy danh sách hội thoại: ', err);
+          },
+        });
     });
   }
 
-  onSearch(): void {
-    console.log('Đang tìm:', this.searchValue);
-    // Gọi API hoặc lọc danh sách ở đây
+  onFocus() {
+    this.isSearchFocused = true;
   }
-  constructor(
-    private userService: UserService,
-    private conversationService: ConversationService
-  ) {
+
+  onBlur() {
+    // Delay 200ms để cho phép click vào user trước khi ẩn
+    setTimeout(() => {
+      this.isSearchFocused = false;
+    }, 200);
+  }
+
+  onSearch(): void {
+    const keyword = this.searchValue.toLowerCase().trim();
+    if (keyword) {
+      this.filteredUsers = this.allUser.filter((user) =>
+        user.username!.toLowerCase().includes(keyword)
+      );
+    } else {
+      this.filteredUsers = this.allUser;
+    }
+  }
+
+  fetchUsers(): void {
     if (this.userId) {
-      console.log(this.userId);
       this.userService.getAllUsersExceptMe().subscribe({
         next: (res) => {
           this.allUser = res;
@@ -53,9 +83,24 @@ export class UserListComponent {
         .subscribe({
           next: (res) => {
             this.userConversation = res;
-            console.log(this.userConversation);
+            console.log(
+              'danh sách hội thoại người dùng',
+              this.userConversation
+            );
+          },
+          error: (err) => {
+            console.error('Lỗi khi lấy danh sách hội thoại: ', err);
           },
         });
     }
   }
+
+  ngOnInit(): void {
+    this.fetchUsers();
+  }
+
+  constructor(
+    private userService: UserService,
+    private conversationService: ConversationService
+  ) {}
 }

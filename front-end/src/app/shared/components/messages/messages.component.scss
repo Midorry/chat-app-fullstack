@@ -17,6 +17,21 @@ div i {
   height: 94vh;
 }
 
+.no-conversation {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-conversation p {
+  text-align: center;
+  border-radius: 24px;
+  font-weight: bold;
+  background-color: #ced2f7;
+  padding: 2px 8px;
+}
+
 .chat-header {
   flex-shrink: 0;
   display: flex;
@@ -26,9 +41,26 @@ div i {
   border-bottom: 1px solid #f0f0f0;
 }
 
+.chat-messages-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; // không scroll container ngoài
+
+  .chat-messages-list {
+    margin-top: auto; // đẩy nội dung xuống dưới
+    overflow-y: auto;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; // khoảng cách giữa các tin nhắn
+    padding: 8px;
+  }
+}
+
 .chat-messages {
   flex: 1; // Chiếm phần còn lại giữa header và input
-  overflow-y: auto;
+  // overflow-y: scroll;
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -111,5 +143,6 @@ div i {
 .chat-input {
   flex-shrink: 0;
   border-top: 1px solid #f0f0f0;
-  padding: 8px 16px;
+  // padding: 8px 16px;
+  padding-top: 8px;
 }

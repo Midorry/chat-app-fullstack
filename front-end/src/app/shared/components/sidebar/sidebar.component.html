@@ -5,7 +5,21 @@
   [nzCollapsed]="true"
   [nzTrigger]="null"
 >
-  <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="true">
-    <li nz-submenu nzTitle="Cá nhân" nzIcon="dashboard"></li>
-  </ul>
+  <div class="sider-content">
+    <ul
+      nz-menu
+      nzTheme="dark"
+      nzMode="inline"
+      [nzInlineCollapsed]="true"
+      class="menu-list"
+    >
+      <li nz-submenu nzTitle="Cá nhân" nzIcon="dashboard"></li>
+      <!-- Thêm các item khác nếu cần -->
+    </ul>
+
+    <div class="logout-button" (click)="logout()">
+      <i nz-icon nzType="logout"></i>
+      <!-- <span>Đăng xuất</span> -->
+    </div>
+  </div>
 </nz-sider>

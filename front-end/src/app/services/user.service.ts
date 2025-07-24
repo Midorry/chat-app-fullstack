@@ -13,6 +13,11 @@ export class UserService {
     return this.http.get<User[]>(`${this.apiUrl}`);
   }
 
+  getLocalUserId(): string | null {
+    const userId = localStorage.getItem('userId');
+    return userId ? JSON.parse(userId) : null;
+  }
+
   getAllUsersExceptMe(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/all`);
   }

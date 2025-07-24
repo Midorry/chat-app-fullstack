@@ -12,17 +12,12 @@ export class SocketService {
   }
 
   // Kết nối socket
-  connect(): void {
-    if (!this.socket.connected) {
-      this.socket.connect();
-    }
+  connect(eventName: string, callback: (...args: any[]) => void) {
+    this.socket.on(eventName, callback);
   }
 
-  // Ngắt kết nối
-  disconnect(): void {
-    if (this.socket) {
-      this.socket.disconnect();
-    }
+  disconnect(eventName: string, callback: (...args: any[]) => void) {
+    this.socket.off(eventName, callback);
   }
 
   // Emit 1 sự kiện
