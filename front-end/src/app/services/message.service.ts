@@ -21,6 +21,23 @@ export class MessageService {
     });
   }
 
+  getMessagesByPage(
+    conversationId: string,
+    page: number,
+    limit: number
+  ): Observable<Message[]> {
+    return this.http.get<Message[]>(
+      `${this.apiUrl}/${conversationId}?page=${page}&limit=${limit}`
+    );
+  }
+
+  prependMessages(messages: Message[]) {
+    const currentMessages = this.messagesSubject.getValue();
+    console.log('currentMessages:', currentMessages);
+    console.log('Messages:', messages);
+    this.messagesSubject.next([...messages, ...currentMessages]);
+  }
+
   // Gửi tin nhắn mới
   sendMessage(data: any): Observable<Message> {
     return this.http.post<Message>(`${this.apiUrl}`, data);

@@ -55,6 +55,25 @@ div i {
     flex-direction: column;
     gap: 8px; // khoảng cách giữa các tin nhắn
     padding: 8px;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #c1c1c1 transparent; /* Firefox */
+  }
+  .chat-messages-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .chat-messages-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .chat-messages-list::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+  }
+
+  .chat-messages-list::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
   }
 }
 
@@ -80,9 +99,9 @@ div i {
 .message-item:not(.my-message) .message-bubble {
   position: relative;
   padding: 12px;
-  background-color: #ced2f7;
+  background-color: #dde0ff;
   border-radius: 12px;
-  max-width: 300px;
+  max-width: 60%;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   word-wrap: break-word;
   word-break: break-word;
@@ -95,7 +114,7 @@ div i {
   padding: 12px;
   background-color: #7778ee;
   border-radius: 12px;
-  max-width: 300px;
+  max-width: 60%;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   word-wrap: break-word;
   word-break: break-word;
@@ -111,7 +130,7 @@ div i {
   width: 0;
   height: 0;
   border-top: 10px solid transparent;
-  border-bottom: 10px solid #ced2f7;
+  border-bottom: 10px solid #dde0ff;
   border-right: 10px solid transparent;
   border-left: 10px solid transparent;
 }
@@ -127,6 +146,18 @@ div i {
   border-bottom: 10px solid #7778ee;
   border-right: 10px solid transparent;
   border-left: 10px solid transparent;
+}
+
+.date-label {
+  text-align: center;
+  font-weight: bold;
+  font-size: 13px;
+  color: #666;
+  background-color: #e4e7f7;
+  border-radius: 12px;
+  padding: 4px 12px;
+  margin: 12px auto 4px auto;
+  width: fit-content;
 }
 
 .message-item {
@@ -146,7 +177,7 @@ div i {
   .ant-skeleton-paragraph.ng-star-inserted {
   display: flex;
   align-items: center;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .message-item.my-message {

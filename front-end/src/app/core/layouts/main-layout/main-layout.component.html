@@ -1,33 +1,27 @@
-<div style="display: flex">
+<div class="main-container">
   <app-sidebar></app-sidebar>
-  <div
-    style="
-      width: 100vw;
-      height: 100vh;
-      padding: 5px;
-      display: flex;
-      background-color: #001529;
-    "
-  >
-    <app-user-list
-      style="
-        width: 30%;
-        border-top-left-radius: 20px;
-        border-bottom-left-radius: 20px;
-        padding: 20px 10px 20px 10px;
-        background: #ffffff;
-      "
-      (conversationSelected)="onConversationSelected($event)"
-    ></app-user-list>
-    <app-messages
-      style="
-        width: 70%;
-        background-color: aliceblue;
-        border-top-right-radius: 20px;
-        border-bottom-right-radius: 20px;
-        padding: 20px 10px 20px 10px;
-      "
-      [conversationId]="selectedConversationId"
-    ></app-messages>
-  </div>
+
+  <nz-row class="chat-layout">
+    <nz-col
+      [nzXs]="24"
+      [nzSm]="24"
+      [nzMd]="9"
+      [nzLg]="7"
+      class="user-list-container"
+    >
+      <app-user-list
+        (conversationSelected)="onConversationSelected($event)"
+      ></app-user-list>
+    </nz-col>
+
+    <nz-col
+      [nzXs]="24"
+      [nzSm]="24"
+      [nzMd]="15"
+      [nzLg]="17"
+      class="messages-container"
+    >
+      <app-messages [conversationId]="selectedConversationId"></app-messages>
+    </nz-col>
+  </nz-row>
 </div>

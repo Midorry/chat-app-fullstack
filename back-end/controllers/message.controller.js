@@ -46,13 +46,18 @@ export const sendMessage = async (req, res) => {
 // Lấy tin nhắn theo conversationId
 export const getMessagesByConversation = async (req, res) => {
   try {
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
     const messages = await Message.find({
       conversationId: req.params.conversationId,
     })
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: -1 }) // lấy mới nhất trước
+      .skip(skip)
+      .limit(parseInt(limit))
       .populate("senderId", "username avatar");
 
-    res.json(messages);
+    res.json(messages.reverse()); // đảo lại thành cũ -> mới
   } catch (err) {
     res.status(500).json({ error: "Lỗi khi lấy tin nhắn" });
   }

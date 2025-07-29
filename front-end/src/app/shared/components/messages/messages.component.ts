@@ -23,14 +23,27 @@ import { UserService } from 'src/app/services/user.service';
 export class MessagesComponent {
   @Input() conversationId: string | null = null;
   @Input() otherUserId: string | null = null;
-  @ViewChild('bottomAnchor') private bottomAnchor!: ElementRef;
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
   currentUserId = this.userService.getLocalUserId();
   conversationInfo: Conversation | null = null;
   otherUserData: User | undefined = undefined;
   loadingMessages = true;
+  messages: Message[] = [];
+  currentPage = 2;
+  pageSize = 20;
+  loading = false;
+  allLoaded = false;
+
+  private lastScrollHeight: number = 0;
+  private isInitialScrollDone = false;
   private hasScrolled = false;
   private messagesSubscription!: Subscription;
+
+  groupedMessages: {
+    date: string;
+    messages: Message[];
+  }[] = [];
 
   ngAfterViewChecked() {
     if (!this.hasScrolled) {
@@ -39,18 +52,11 @@ export class MessagesComponent {
     }
   }
 
-  private scrollToBottom(): void {
-    this.ngZone.runOutsideAngular(() => {
-      setTimeout(() => {
-        if (this.bottomAnchor?.nativeElement) {
-          this.bottomAnchor.nativeElement.scrollIntoView({
-            behavior: 'smooth',
-          });
-        } else {
-          console.warn('bottomAnchor chưa tồn tại');
-        }
-      }, 50); // delay nhỏ để view đảm bảo update
-    });
+  private scrollToBottom() {
+    const container = this.scrollContainer?.nativeElement;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }
 
   ngOnDestroy(): void {
@@ -70,18 +76,109 @@ export class MessagesComponent {
     }
   };
 
+  onScroll() {
+    const scrollTop = this.scrollContainer.nativeElement.scrollTop;
+
+    if (!this.isInitialScrollDone || this.loading || this.allLoaded) return;
+
+    if (scrollTop === 0 && !this.loading) {
+      this.loadOlderMessages();
+    }
+  }
+
+  loadOlderMessages() {
+    if (this.loading || this.allLoaded) {
+      return;
+    }
+    this.lastScrollHeight = this.scrollContainer.nativeElement.scrollHeight;
+    const container = this.scrollContainer.nativeElement;
+
+    const previousScrollHeight = container.scrollHeight;
+    const previousScrollTop = container.scrollTop;
+
+    this.loading = true;
+    this.messageService
+      .getMessagesByPage(this.conversationId!, this.currentPage, this.pageSize)
+      .subscribe({
+        next: (olderMessages) => {
+          if (olderMessages.length < this.pageSize) {
+            this.allLoaded = true; //Không còn dữ liệu nữa
+          }
+          this.messageService.prependMessages(olderMessages);
+          this.currentPage++;
+
+          this.cdr.detectChanges(); // Cập nhật view
+
+          this.ngZone.runOutsideAngular(() => {
+            setTimeout(() => {
+              const newScrollHeight = container.scrollHeight;
+              const scrollDiff = newScrollHeight - previousScrollHeight;
+              container.scrollTop = previousScrollTop + scrollDiff;
+            }, 0); // Bạn có thể thử tăng thành 30~100ms nếu vẫn giật
+          });
+
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Lỗi khi load older messages:', err);
+          this.loading = false;
+        },
+      });
+  }
+
   checkDataReady = () => {
     if (this.messagesSubscription) {
       this.loadingMessages = false;
     }
   };
 
+  groupMessagesByDate(
+    messages: Message[]
+  ): { date: string; messages: Message[] }[] {
+    const grouped = new Map<string, Message[]>();
+
+    messages.forEach((msg) => {
+      const date = this.formatDateLabel(new Date(msg.createdAt!)); // convert timestamp thành chuỗi ngày phù hợp
+      if (!grouped.has(date)) {
+        grouped.set(date, []);
+      }
+      grouped.get(date)!.push(msg);
+    });
+
+    return Array.from(grouped.entries()).map(([date, messages]) => ({
+      date,
+      messages,
+    }));
+  }
+
+  formatDateLabel(date: Date): string {
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    const dateOnly = date.toDateString();
+    const todayOnly = today.toDateString();
+    const yesterdayOnly = yesterday.toDateString();
+
+    if (dateOnly === todayOnly) return 'Hôm nay';
+    if (dateOnly === yesterdayOnly) return 'Hôm qua';
+    return date.toLocaleDateString('vi-VN'); // ví dụ: 27/07/2025
+  }
+
   ngOnInit() {
-    console.log('Conversation ID:', this.conversationId);
-    this.messagesSubscription = this.messages$.subscribe(() => {
+    if (this.conversationId) {
+      this.loadOlderMessages(); // Load page 1
+    }
+    setTimeout(() => {
+      this.scrollToBottom();
+      this.isInitialScrollDone = true;
+    }, 100);
+
+    this.messagesSubscription = this.messages$.subscribe((messages) => {
       this.hasScrolled = false;
+
+      this.groupedMessages = this.groupMessagesByDate(messages);
       this.checkDataReady();
-      this.cdr.detectChanges(); // ép Angular cập nhật View
     });
   }
 

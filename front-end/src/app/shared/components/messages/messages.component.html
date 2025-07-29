@@ -44,28 +44,50 @@
 
         <ng-template #showMessages>
           <div
-            class="message-item"
-            *ngFor="let message of messages$ | async"
-            [ngClass]="{
-              'my-message': message.senderId._id === currentUserId,
-              'other-message': message.senderId._id !== currentUserId
-            }"
+            #scrollContainer
+            class="chat-messages-list"
+            (scroll)="onScroll()"
           >
-            <nz-avatar
-              class="message-avatar"
-              nzShape="square"
-              [nzSize]="48"
-              nzIcon="user"
-            ></nz-avatar>
-            <app-message
-              class="message-bubble"
-              [content]="message.content"
-              [username]="message.senderId.username"
-              [sendTime]="message.createdAt"
-            ></app-message>
+            <div class="top-loading" *ngIf="loading">
+              <nz-spin nzSize="small"></nz-spin>
+            </div>
+            <div
+              class="message-item"
+              *ngFor="let message of messages$ | async"
+              [ngClass]="{
+                'my-message': message.senderId._id === currentUserId,
+                'other-message': message.senderId._id !== currentUserId
+              }"
+            >
+              <nz-avatar
+                class="message-avatar"
+                nzShape="square"
+                [nzSize]="48"
+                nzIcon="user"
+              ></nz-avatar>
+              <!-- <div *ngFor="let group of groupedMessages">
+                <div class="date-header">{{ group.date }}</div>
+  
+                <ng-container *ngFor="let msg of group.messages">
+                  <app-message
+                    class="message-bubble"
+                    [content]="msg.content"
+                    [username]="msg.senderId.username"
+                    [userId]="msg.senderId._id"
+                    [sendTime]="msg.createdAt"
+                  ></app-message>
+                </ng-container>
+              </div> -->
+              <app-message
+                class="message-bubble"
+                [content]="message.content"
+                [username]="message.senderId.username"
+                [userId]="message.senderId._id"
+                [sendTime]="message.createdAt"
+              ></app-message>
+            </div>
           </div>
         </ng-template>
-        <div #bottomAnchor></div>
       </div>
     </div>
 
