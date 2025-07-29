@@ -59,39 +59,126 @@ export const createOneToOneConversation = async (req, res) => {
 };
 // Lấy tất cả cuộc trò chuyện của 1 người dùng
 export const getConversationsByUser = async (req, res) => {
-  const currentUserId = req.params.userId;
+  const currentUserId = new mongoose.Types.ObjectId(req.params.userId);
 
   try {
-    const conversations = await Conversation.find({
-      members: currentUserId,
-    })
-      .populate("members", "username email avatar") // chỉ lấy một vài field
-      .populate("lastMessage");
-
-    const result = conversations
-      .filter((c) => c.isGroup === false)
-      .map((c) => {
-        const otherMember = c.members.find(
-          (m) => m._id.toString() !== currentUserId
-        );
-
-        return {
-          _id: c._id,
-          isGroup: c.isGroup,
-          lastMessage: c.lastMessage,
-          otherMember: {
-            _id: otherMember._id,
-            username: otherMember.username,
-            email: otherMember.email,
-            avatar: otherMember.avatar,
+    const conversations = await Conversation.aggregate([
+      {
+        $match: {
+          members: currentUserId,
+        },
+      },
+      {
+        $lookup: {
+          from: "messages",
+          let: { convoId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$conversationId", "$$convoId"] },
+                    { $ne: ["$senderId", currentUserId] },
+                    { $not: { $in: [currentUserId, "$seenBy"] } },
+                  ],
+                },
+              },
+            },
+          ],
+          as: "unseenMessages",
+        },
+      },
+      {
+        $addFields: {
+          unseenCount: { $size: "$unseenMessages" },
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "members",
+          foreignField: "_id",
+          as: "membersInfo",
+        },
+      },
+      {
+        $lookup: {
+          from: "messages",
+          localField: "lastMessage",
+          foreignField: "_id",
+          as: "lastMessageInfo",
+        },
+      },
+      {
+        $unwind: {
+          path: "$lastMessageInfo",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "lastMessageInfo.senderId",
+          foreignField: "_id",
+          as: "lastMessageSender",
+        },
+      },
+      {
+        $unwind: {
+          path: "$lastMessageSender",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          isGroup: 1,
+          unseenCount: 1,
+          members: "$membersInfo",
+          lastMessage: {
+            _id: "$lastMessageInfo._id",
+            content: "$lastMessageInfo.content",
+            createdAt: "$lastMessageInfo.createdAt",
+            seenBy: "$lastMessageInfo.seenBy",
+            senderId: {
+              _id: "$lastMessageSender._id",
+              username: "$lastMessageSender.username",
+              avatar: "$lastMessageSender.avatar",
+            },
           },
-        };
-      });
+        },
+      },
+      {
+        $sort: { "lastMessage.createdAt": -1 },
+      },
+    ]);
 
-    res.status(200).json(result);
+    // Format lại để tách "otherMember"
+    const formatted = conversations.map((c) => {
+      const otherMember = c.members.find(
+        (m) => m._id.toString() !== req.params.userId
+      );
+
+      return {
+        _id: c._id,
+        isGroup: c.isGroup,
+        unseenCount: c.unseenCount,
+        lastMessage: c.lastMessage,
+        otherMember: otherMember
+          ? {
+              _id: otherMember._id,
+              username: otherMember.username,
+              avatar: otherMember.avatar,
+              email: otherMember.email,
+            }
+          : null,
+      };
+    });
+
+    res.status(200).json(formatted);
   } catch (err) {
-    console.error("Lỗi khi lấy danh sách cuộc hội thoại:", err);
-    res.status(500).json({ message: "Lỗi server" });
+    console.error("Aggregation error:", err);
+    res.status(500).json({ message: "Lỗi khi lấy danh sách cuộc hội thoại" });
   }
 };
 

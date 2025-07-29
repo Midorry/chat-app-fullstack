@@ -28,7 +28,7 @@ div i {
   text-align: center;
   border-radius: 24px;
   font-weight: bold;
-  background-color: #ced2f7;
+  background-color: #dbdcfe;
   padding: 2px 8px;
 }
 
@@ -134,6 +134,19 @@ div i {
   align-items: flex-end;
   position: relative;
   margin-bottom: 12px;
+}
+
+.skeleton-bubble {
+  flex: 1;
+}
+
+::ng-deep
+  .my-message
+  .skeleton-bubble
+  .ant-skeleton-paragraph.ng-star-inserted {
+  display: flex;
+  align-items: center;
+  justify-content: end;
 }
 
 .message-item.my-message {

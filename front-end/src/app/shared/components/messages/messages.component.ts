@@ -6,6 +6,7 @@ import {
   NgZone,
   ViewChild,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Conversation } from 'src/app/models/conversation.model';
 import { Message } from 'src/app/models/massage.model';
 import { User } from 'src/app/models/user.model';
@@ -27,7 +28,9 @@ export class MessagesComponent {
   currentUserId = this.userService.getLocalUserId();
   conversationInfo: Conversation | null = null;
   otherUserData: User | undefined = undefined;
+  loadingMessages = true;
   private hasScrolled = false;
+  private messagesSubscription!: Subscription;
 
   ngAfterViewChecked() {
     if (!this.hasScrolled) {
@@ -44,7 +47,7 @@ export class MessagesComponent {
             behavior: 'smooth',
           });
         } else {
-          console.warn('⚠️ bottomAnchor chưa tồn tại');
+          console.warn('bottomAnchor chưa tồn tại');
         }
       }, 50); // delay nhỏ để view đảm bảo update
     });
@@ -52,17 +55,35 @@ export class MessagesComponent {
 
   ngOnDestroy(): void {
     this.socketService.disconnect('receiveMessage', this.onReceiveMessage);
+    if (this.messagesSubscription) {
+      this.messagesSubscription.unsubscribe();
+    }
   }
 
   // define callback là method riêng để huỷ dễ hơn
   onReceiveMessage = (newMessage: Message) => {
-    console.log('not oke: ', newMessage.conversationId);
+    // console.log('not oke: ', newMessage.conversationId);
     if (newMessage.conversationId === this.conversationId) {
-      console.log('oke');
+      // console.log('oke');
       this.messageService.addMessage(newMessage);
       setTimeout(() => this.scrollToBottom(), 100);
     }
   };
+
+  checkDataReady = () => {
+    if (this.messagesSubscription) {
+      this.loadingMessages = false;
+    }
+  };
+
+  ngOnInit() {
+    console.log('Conversation ID:', this.conversationId);
+    this.messagesSubscription = this.messages$.subscribe(() => {
+      this.hasScrolled = false;
+      this.checkDataReady();
+      this.cdr.detectChanges(); // ép Angular cập nhật View
+    });
+  }
 
   ngOnChanges() {
     if (this.conversationId) {
@@ -72,26 +93,28 @@ export class MessagesComponent {
         .subscribe({
           next: (res) => {
             this.conversationInfo = res.conversation;
-            console.log('info conversation', this.conversationInfo);
             this.otherUserData = this.conversationInfo?.members.find(
               (m) => m._id !== this.currentUserId
             );
-            console.log('info other user', this.otherUserData);
           },
           error: (err) => {
             console.error('Lỗi khi lấy chi tiết hội thoại: ', err);
           },
         });
-      this.socketService.emit('join', this.conversationId);
+
+      this.socketService.emit('join', {
+        userId: this.currentUserId,
+        conversationId: this.conversationId,
+      });
+
+      // ✅ Gỡ listener cũ trước khi gắn mới
+      this.socketService.disconnect('receiveMessage', this.onReceiveMessage);
       this.socketService.connect('receiveMessage', this.onReceiveMessage);
     }
+
     if (this.otherUserId) {
       // this.getOtherUser(this.otherUserId);
     }
-    this.messages$.subscribe(() => {
-      this.hasScrolled = false;
-      this.cdr.detectChanges(); // ép Angular cập nhật View
-    });
   }
 
   getMessagesByConversationId(id: string) {

@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Message } from 'src/app/models/massage.model';
+import { ConversationService } from 'src/app/services/conversation.service';
 import { MessageService } from 'src/app/services/message.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { UserService } from 'src/app/services/user.service';
@@ -28,11 +29,20 @@ export class MessageInputComponent {
       conversationId: conversationId,
       senderId: { _id: senderId },
       content,
+      seenBy: [senderId],
     };
     this.messageService.sendMessage(messageData).subscribe({
       next: (res) => {
-        console.log('send message', res);
-        // this.socketService.emit('sendMessage', res);
+        // console.log('send message', res);
+        this.socketService.emit('sendMessage', res);
+        this.conversationService.updateConversationOnNewMessage(res);
+        this.conversationService.updateConversationUnseenCount([
+          { conversationId, unseenCount: 0 },
+        ]);
+        this.socketService.emit('markAsSeen', {
+          userId: senderId,
+          conversationId: conversationId,
+        });
         this.messageText = '';
       },
       error: (err) => {
@@ -43,6 +53,7 @@ export class MessageInputComponent {
   constructor(
     private messageService: MessageService,
     private userService: UserService,
+    private conversationService: ConversationService,
     private socketService: SocketService
   ) {}
 }

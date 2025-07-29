@@ -1,50 +1,80 @@
-<div class="chat-container" *ngIf="conversationId" else noConversation>
-  <!-- Header -->
-  <div class="chat-header">
-    <div class="chat-header-left">
-      <h2>{{ otherUserData?.username }}</h2>
-      <p>Online</p>
-    </div>
-    <div class="chat-header-right">
-      <i nz-icon nzType="search" nzTheme="outline"></i>
-      <i nz-icon nzType="phone" nzTheme="outline"></i>
-      <i nz-icon nzType="more" nzTheme="outline"></i>
-    </div>
-  </div>
-
-  <!-- Nội dung tin nhắn -->
-  <div class="chat-messages-container" *ngIf="conversationId">
-    <div class="chat-messages-list">
-      <div
-        class="message-item"
-        *ngFor="let message of messages$ | async"
-        [ngClass]="{
-          'my-message': message.senderId._id === currentUserId,
-          'other-message': message.senderId._id !== currentUserId
-        }"
-      >
-        <nz-avatar
-          class="message-avatar"
-          nzShape="square"
-          [nzSize]="48"
-          nzIcon="user"
-        ></nz-avatar>
-        <app-message
-          class="message-bubble"
-          [content]="message.content"
-          [username]="message.senderId.username"
-          [sendTime]="message.createdAt"
-        ></app-message>
+<ng-container *ngIf="conversationId; else noConversation">
+  <div class="chat-container">
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="chat-header-left">
+        <h2>{{ otherUserData?.username }}</h2>
+        <p>Online</p>
       </div>
-      <div #bottomAnchor></div>
+      <div class="chat-header-right">
+        <i nz-icon nzType="search" nzTheme="outline"></i>
+        <i nz-icon nzType="phone" nzTheme="outline"></i>
+        <i nz-icon nzType="more" nzTheme="outline"></i>
+      </div>
+    </div>
+
+    <!-- Nội dung tin nhắn -->
+    <div class="chat-messages-container" *ngIf="conversationId">
+      <div class="chat-messages-list">
+        <ng-container *ngIf="loadingMessages; else showMessages">
+          <div
+            *ngFor="let i of [0, 1, 2, 3]"
+            class="message-item"
+            [ngClass]="{
+              'my-message': i % 2 === 1,
+              'other-message': i % 2 === 0
+            }"
+          >
+            <nz-avatar
+              class="message-avatar"
+              nzShape="square"
+              [nzSize]="48"
+              nzIcon="user"
+            ></nz-avatar>
+
+            <nz-skeleton
+              [nzActive]="true"
+              [nzParagraph]="{ rows: 1, width: '60%' }"
+              [nzTitle]="false"
+              [nzAvatar]="false"
+              class="skeleton-bubble"
+            ></nz-skeleton>
+          </div>
+        </ng-container>
+
+        <ng-template #showMessages>
+          <div
+            class="message-item"
+            *ngFor="let message of messages$ | async"
+            [ngClass]="{
+              'my-message': message.senderId._id === currentUserId,
+              'other-message': message.senderId._id !== currentUserId
+            }"
+          >
+            <nz-avatar
+              class="message-avatar"
+              nzShape="square"
+              [nzSize]="48"
+              nzIcon="user"
+            ></nz-avatar>
+            <app-message
+              class="message-bubble"
+              [content]="message.content"
+              [username]="message.senderId.username"
+              [sendTime]="message.createdAt"
+            ></app-message>
+          </div>
+        </ng-template>
+        <div #bottomAnchor></div>
+      </div>
+    </div>
+
+    <!-- Ô nhập tin nhắn -->
+    <div class="chat-input">
+      <app-message-input [conversationId]="conversationId"></app-message-input>
     </div>
   </div>
-
-  <!-- Ô nhập tin nhắn -->
-  <div class="chat-input">
-    <app-message-input [conversationId]="conversationId"></app-message-input>
-  </div>
-</div>
+</ng-container>
 
 <ng-template #noConversation>
   <div class="chat-container">

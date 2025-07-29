@@ -1,3 +1,4 @@
+import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
 import { getIO } from "../socket/index.js";
 
@@ -16,6 +17,11 @@ export const sendMessage = async (req, res) => {
 
     await message.save();
 
+    await Conversation.findByIdAndUpdate(conversationId, {
+      lastMessage: message._id,
+      updatedAt: Date.now(), // để hỗ trợ sort theo thời gian hoạt động mới nhất
+    });
+
     await message.populate("senderId", "username");
 
     const io = getIO();
@@ -23,7 +29,7 @@ export const sendMessage = async (req, res) => {
 
     res.status(201).json(message);
   } catch (err) {
-    console.error("❌ Lỗi khi gửi tin nhắn:", {
+    console.error("Lỗi khi gửi tin nhắn:", {
       message: err.message,
       stack: err.stack,
       name: err.name,

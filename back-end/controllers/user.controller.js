@@ -15,7 +15,9 @@ export const getAllUsersExceptMe = async (req, res) => {
   try {
     const myId = req.user.id; // Lấy ID từ middleware xác thực JWT
 
-    const users = await User.find({ _id: { $ne: myId } }).select("-password");
+    const users = await User.find({ _id: { $ne: myId } })
+      .sort({ createdAt: -1 })
+      .select("-password");
 
     res.status(200).json(users);
   } catch (error) {

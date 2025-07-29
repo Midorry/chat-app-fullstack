@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { environment } from '../environments/environment';
 import { Observable } from 'rxjs';
+import { Message } from '../models/massage.model';
 
 @Injectable({ providedIn: 'root' })
 export class SocketService {
@@ -26,9 +27,7 @@ export class SocketService {
   }
 
   // Lắng nghe 1 sự kiện
-  listen(event: string) {
-    return new Observable((subscriber) => {
-      this.socket.on(event, (data) => subscriber.next(data));
-    });
+  listenReceiveMessage(callback: (message: Message) => void) {
+    this.socket.on('receiveMessage', callback);
   }
 }

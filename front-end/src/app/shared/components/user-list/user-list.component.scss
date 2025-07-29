@@ -6,6 +6,8 @@ p {
   display: block;
   // background-color: #dbdcfe;
   height: 100%;
+  overflow-y: auto;
+  max-height: 100%;
 }
 
 .search-wrapper {

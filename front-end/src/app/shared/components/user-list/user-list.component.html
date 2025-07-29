@@ -47,24 +47,41 @@
       <p>Không tìm thấy người dùng nào.</p>
     </div>
   </div>
-
+  <div *ngIf="!dataReady">
+    <nz-skeleton
+      [nzActive]="true"
+      [nzAvatar]="true"
+      [nzTitle]="false"
+      [nzParagraph]="{ rows: 2 }"
+      [nzRound]="true"
+      *ngFor="let i of [1, 2, 3, 4]"
+      class="skeleton-item"
+    ></nz-skeleton>
+  </div>
   <div *ngIf="userConversation.length > 0; else newUser">
     <div
-      class="user-message active"
+      class="user-message"
       *ngFor="let convo of userConversation"
       (click)="selectConversation(convo._id)"
+      [ngClass]="{ active: convo._id === conversationId }"
     >
       <div class="user-message-row">
-        <nz-badge [nzCount]="5" class="user-badge">
+        <nz-badge [nzCount]="convo.unseenCount" class="user-badge">
           <nz-avatar nzShape="square" [nzSize]="48" nzIcon="user"></nz-avatar>
         </nz-badge>
         <div class="user-info">
           <div class="user-header">
-            <h4 *ngIf="!convo.isGroup">{{ convo.otherMember?.username }}</h4>
+            <h4 *ngIf="!convo.isGroup">
+              {{ convo.otherMember?.username }}
+            </h4>
             <h4 *ngIf="convo.isGroup">{{ convo.name }}</h4>
-            <p class="message-time">4m</p>
+            <p class="message-time">
+              {{ convo.lastMessage?.createdAt || "" | timeAgo }}
+            </p>
           </div>
-          <p class="message-preview">You: {{ convo.lastMessage }}</p>
+          <p class="message-preview" *ngIf="convo.lastMessage?._id">
+            {{ getSenderName(convo) }}: {{ convo.lastMessage?.content }}
+          </p>
         </div>
       </div>
     </div>
@@ -77,7 +94,7 @@
       (click)="selectUserToChat(user._id!)"
     >
       <div class="user-message-row">
-        <nz-badge [nzCount]="5" class="user-badge">
+        <nz-badge [nzCount]="0" class="user-badge">
           <nz-avatar nzShape="square" [nzSize]="48" nzIcon="user"></nz-avatar>
         </nz-badge>
         <div class="user-info">

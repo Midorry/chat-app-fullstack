@@ -21,6 +21,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 
 import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
 import { MessageComponent } from './shared/components/message/message.component';
@@ -31,6 +32,7 @@ import { MessagesComponent } from './shared/components/messages/messages.compone
 import { UserListComponent } from './shared/components/user-list/user-list.component';
 import { RegisterComponent } from './core/auth/pages/register/register.component';
 import { AuthInterceptor } from './core/auth/interceptor/auth.interceptor';
+import { TimeAgoPipe } from './shared/pipes/time-ago.pipe';
 
 registerLocaleData(en);
 
@@ -45,6 +47,7 @@ registerLocaleData(en);
     MessagesComponent,
     UserListComponent,
     RegisterComponent,
+    TimeAgoPipe,
   ],
   imports: [
     BrowserModule,
@@ -62,6 +65,7 @@ registerLocaleData(en);
     NzAvatarModule,
     NzBadgeModule,
     NzFormModule,
+    NzSkeletonModule,
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
