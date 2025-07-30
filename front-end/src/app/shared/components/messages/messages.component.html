@@ -81,6 +81,8 @@
               <app-message
                 class="message-bubble"
                 [content]="message.content"
+                [type]="message.type"
+                [attachments]="message.attachments"
                 [username]="message.senderId.username"
                 [userId]="message.senderId._id"
                 [sendTime]="message.createdAt"

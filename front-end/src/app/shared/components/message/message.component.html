@@ -1,19 +1,30 @@
 <div>
-  <h5 *ngIf="checkSender()" style="color: #525dbb">{{ username }}</h5>
-  <p
-    style="
-      max-width: 100%;
-      word-wrap: break-word;
-      word-break: break-word;
-      white-space: normal;
-    "
-  >
-    {{ content }}
-  </p>
-  <div
-    style="display: flex; justify-content: space-between; align-items: center"
-  >
+  <h5 *ngIf="checkSender()" class="message-username">{{ username }}</h5>
+
+  <!-- Nếu là tin nhắn hình ảnh -->
+  <ng-container *ngIf="type === 'image'; else textMessage">
+    <img
+      [src]="localhostBackEnd + attachments?.[0]"
+      alt="image message"
+      class="message-image"
+      (click)="openImageModal(localhostBackEnd + attachments?.[0])"
+      #imageElement
+    />
+  </ng-container>
+
+  <!-- Nếu là tin nhắn văn bản -->
+  <ng-template #textMessage>
+    <p class="message-text">
+      {{ content }}
+    </p>
+  </ng-template>
+
+  <div class="message-footer">
     <i nz-icon nzType="like" nzTheme="outline"></i>
-    <p style="font-size: small">{{ sendTime | date : "HH:mm" }}</p>
+    <p class="message-time">{{ sendTime | date : "HH:mm" }}</p>
   </div>
+</div>
+
+<div class="image-modal" *ngIf="previewImage" (click)="closeImageModal()">
+  <img [src]="previewImage" class="image-zoom" />
 </div>

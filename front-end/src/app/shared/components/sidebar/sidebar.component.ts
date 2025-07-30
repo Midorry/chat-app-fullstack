@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ConversationService } from 'src/app/services/conversation.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,7 +11,11 @@ export class SidebarComponent {
   logout() {
     // Xử lý logout, ví dụ:
     localStorage.clear();
+    this.conversationService.clearConversations();
     this.router.navigate(['/login']);
   }
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private conversationService: ConversationService
+  ) {}
 }

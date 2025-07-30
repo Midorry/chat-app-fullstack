@@ -4,12 +4,15 @@ import { Server } from "socket.io";
 import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import { initSocket } from "./socket/index.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import conversationRoutes from "./routes/conversation.routes.js";
 import messageRoutes from "./routes/message.routes.js";
+import uploadRouter from "./routes/upload.routes.js";
 import { connectDB } from "./config/db.js";
 // các routes khác...
 
@@ -28,9 +31,14 @@ const io = new Server(server, {
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
 
 // Routes
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use("/uploads", cors(), express.static(path.join(__dirname, "uploads")));
+
+// Dùng router
+app.use("/api", uploadRouter);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/conversations", conversationRoutes);

@@ -140,6 +140,8 @@ export const getConversationsByUser = async (req, res) => {
             content: "$lastMessageInfo.content",
             createdAt: "$lastMessageInfo.createdAt",
             seenBy: "$lastMessageInfo.seenBy",
+            attachments: "$lastMessageInfo.attachments",
+            type: "$lastMessageInfo.type",
             senderId: {
               _id: "$lastMessageSender._id",
               username: "$lastMessageSender.username",

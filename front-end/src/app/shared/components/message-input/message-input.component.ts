@@ -13,27 +13,100 @@ import { UserService } from 'src/app/services/user.service';
 export class MessageInputComponent {
   @Input() conversationId: string | null = null;
   messageText = '';
+  previewImageUrl: string | null = null;
+  selectedFile: File | null = null;
 
-  sendMessage() {
-    if (!this.messageText.trim()) return;
-    // console.log('Sending:', this.messageText);
-    const conversationId = this.conversationId;
-    if (!conversationId) return;
-    const content = this.messageText;
-    const senderId = this.userService.getLocalUserId();
-    if (!senderId) {
-      console.error('Không tìm thấy senderId trong localStorage.');
-      return;
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewImageUrl = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+
+      // Lưu file tạm vào một biến để xử lý khi gửi
+      this.selectedFile = file;
     }
-    const messageData: Message = {
+  }
+
+  removePreview() {
+    this.previewImageUrl = null;
+  }
+
+  async sendMessage() {
+    const conversationId = this.conversationId;
+    const senderId = this.userService.getLocalUserId();
+
+    if (!conversationId || !senderId) return;
+
+    let messagePayload: Message = {
       conversationId: conversationId,
       senderId: { _id: senderId },
-      content,
+      content: this.messageText.trim(),
       seenBy: [senderId],
     };
-    this.messageService.sendMessage(messageData).subscribe({
+
+    // Nếu có ảnh đang được preview thì upload
+    if (this.selectedFile) {
+      const formData = new FormData();
+      formData.append('image', this.selectedFile);
+
+      try {
+        this.messageService.uploadImage(formData).subscribe((res) => {
+          if (res && res.url) {
+            const imageMessage: Message = {
+              conversationId: conversationId,
+              senderId: { _id: senderId },
+              content: '',
+              type: 'image',
+              attachments: [res.url],
+              createdAt: new Date().toISOString(),
+              seenBy: [senderId],
+            };
+
+            this.messageService.sendMessage(imageMessage).subscribe({
+              next: (savedMessage) => {
+                console.log(savedMessage);
+                this.socketService.emit('sendMessage', savedMessage);
+                this.conversationService.updateConversationOnNewMessage(
+                  savedMessage
+                );
+                this.conversationService.updateConversationUnseenCount([
+                  { conversationId, unseenCount: 0 },
+                ]);
+                this.socketService.emit('markAsSeen', {
+                  userId: senderId,
+                  conversationId: conversationId,
+                });
+              },
+              error: (err) => {
+                console.error('Lỗi khi lưu tin nhắn ảnh: ', err);
+              },
+            });
+
+            this.previewImageUrl = null;
+            this.selectedFile = null;
+          } else {
+            console.error('Upload ảnh không thành công:', res);
+          }
+        });
+      } catch (err) {
+        console.error('Lỗi khi upload ảnh:', err);
+        return;
+      }
+
+      this.selectedFile = null;
+      this.previewImageUrl = null;
+    }
+
+    if (!messagePayload.content && !messagePayload.attachments?.length) return;
+
+    this.messageService.sendMessage(messagePayload).subscribe({
       next: (res) => {
-        // console.log('send message', res);
+        console.log(res);
         this.socketService.emit('sendMessage', res);
         this.conversationService.updateConversationOnNewMessage(res);
         this.conversationService.updateConversationUnseenCount([
@@ -50,6 +123,7 @@ export class MessageInputComponent {
       },
     });
   }
+
   constructor(
     private messageService: MessageService,
     private userService: UserService,

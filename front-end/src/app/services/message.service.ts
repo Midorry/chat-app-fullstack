@@ -33,8 +33,8 @@ export class MessageService {
 
   prependMessages(messages: Message[]) {
     const currentMessages = this.messagesSubject.getValue();
-    console.log('currentMessages:', currentMessages);
-    console.log('Messages:', messages);
+    // console.log('currentMessages:', currentMessages);
+    // console.log('Messages:', messages);
     this.messagesSubject.next([...messages, ...currentMessages]);
   }
 
@@ -57,5 +57,17 @@ export class MessageService {
   // Xóa danh sách tin nhắn hiện tại (khi chuyển cuộc trò chuyện)
   clearMessages() {
     this.messagesSubject.next([]);
+  }
+
+  uploadImage(formData: FormData): Observable<{ url: string }> {
+    return this.http.post<{ url: string }>(
+      `http://localhost:3000/api/upload`,
+      formData
+    );
+  }
+
+  addMessageToStore(message: Message) {
+    const current = this.messagesSubject.value;
+    this.messagesSubject.next([...current, message]);
   }
 }

@@ -1,3 +1,12 @@
+<div *ngIf="previewImageUrl" class="preview-container">
+  <img [src]="previewImageUrl" class="preview-image" />
+  <i
+    nz-icon
+    nzType="close-circle"
+    (click)="removePreview()"
+    class="remove-icon"
+  ></i>
+</div>
 <nz-input-group [nzPrefix]="prefixIcon" [nzSuffix]="suffixIcon">
   <input
     nz-input
@@ -8,11 +17,24 @@
 </nz-input-group>
 
 <ng-template #prefixIcon>
-  <i nz-icon nzType="paper-clip" class="input-icon"></i>
+  <!-- Icon click sẽ trigger input file -->
+  <i
+    nz-icon
+    nzType="paper-clip"
+    class="input-icon"
+    (click)="fileInput.click()"
+    style="cursor: pointer"
+  ></i>
+  <input
+    #fileInput
+    type="file"
+    (change)="onFileSelected($event)"
+    accept="image/*"
+    style="display: none"
+  />
 </ng-template>
 
 <ng-template #suffixIcon>
-  <i nz-icon nzType="audio" class="input-icon"></i>
   <i
     nz-icon
     nzType="send"

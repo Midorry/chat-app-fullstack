@@ -30,7 +30,7 @@ export class MessagesComponent {
   otherUserData: User | undefined = undefined;
   loadingMessages = true;
   messages: Message[] = [];
-  currentPage = 2;
+  currentPage = 1;
   pageSize = 20;
   loading = false;
   allLoaded = false;
@@ -46,9 +46,22 @@ export class MessagesComponent {
   }[] = [];
 
   ngAfterViewChecked() {
-    if (!this.hasScrolled) {
-      this.scrollToBottom();
-      this.hasScrolled = true;
+    // if (!this.hasScrolled) {
+    //   this.scrollToBottom();
+    //   this.hasScrolled = true;
+    // }
+    if (!this.isInitialScrollDone && this.scrollContainer) {
+      this.ngZone.runOutsideAngular(() => {
+        setTimeout(() => {
+          this.loadOlderMessages();
+          this.scrollToBottom();
+
+          // Cập nhật biến trong zone an toàn
+          this.ngZone.run(() => {
+            this.isInitialScrollDone = true;
+          });
+        });
+      });
     }
   }
 
@@ -110,11 +123,11 @@ export class MessagesComponent {
           this.cdr.detectChanges(); // Cập nhật view
 
           this.ngZone.runOutsideAngular(() => {
-            setTimeout(() => {
+            requestAnimationFrame(() => {
               const newScrollHeight = container.scrollHeight;
               const scrollDiff = newScrollHeight - previousScrollHeight;
               container.scrollTop = previousScrollTop + scrollDiff;
-            }, 0); // Bạn có thể thử tăng thành 30~100ms nếu vẫn giật
+            });
           });
 
           this.loading = false;
@@ -184,7 +197,16 @@ export class MessagesComponent {
 
   ngOnChanges() {
     if (this.conversationId) {
-      this.getMessagesByConversationId(this.conversationId);
+      this.currentPage = 1;
+      this.allLoaded = false;
+      this.loading = false;
+      this.isInitialScrollDone = false;
+      this.hasScrolled = false;
+      this.loadingMessages = true;
+
+      this.messageService.clearMessages();
+
+      // this.getMessagesByConversationId(this.conversationId);
       this.conversationService
         .getConversationById(this.conversationId)
         .subscribe({
@@ -207,10 +229,6 @@ export class MessagesComponent {
       // ✅ Gỡ listener cũ trước khi gắn mới
       this.socketService.disconnect('receiveMessage', this.onReceiveMessage);
       this.socketService.connect('receiveMessage', this.onReceiveMessage);
-    }
-
-    if (this.otherUserId) {
-      // this.getOtherUser(this.otherUserId);
     }
   }
 

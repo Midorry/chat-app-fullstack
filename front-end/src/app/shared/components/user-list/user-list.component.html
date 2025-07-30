@@ -79,9 +79,20 @@
               {{ convo.lastMessage?.createdAt || "" | timeAgo }}
             </p>
           </div>
-          <p class="message-preview" *ngIf="convo.lastMessage?._id">
-            {{ getSenderName(convo) }}: {{ convo.lastMessage?.content }}
-          </p>
+          <ng-container *ngIf="convo.lastMessage?._id">
+            <p
+              class="message-preview"
+              *ngIf="convo.lastMessage?.type !== 'image'; else imageMessage"
+            >
+              {{ getSenderName(convo) }}: {{ convo.lastMessage?.content }}
+            </p>
+
+            <ng-template #imageMessage>
+              <p class="message-preview">
+                {{ getSenderName(convo) }}: Đã gửi một ảnh
+              </p>
+            </ng-template>
+          </ng-container>
         </div>
       </div>
     </div>

@@ -29,3 +29,22 @@ input[nz-input] {
   font-size: 16px;
   outline: none;
 }
+
+.preview-container {
+  margin-top: 8px;
+  position: relative;
+  display: inline-block;
+}
+.preview-image {
+  max-width: 150px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+.remove-icon {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+}
