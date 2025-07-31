@@ -178,6 +178,12 @@ export class MessagesComponent {
     return date.toLocaleDateString('vi-VN'); // ví dụ: 27/07/2025
   }
 
+  onStatusChanged = (data: { userId: string; online: boolean }) => {
+    if (this.otherUserData && data.userId === this.otherUserData._id) {
+      this.otherUserData.online = data.online;
+    }
+  };
+
   ngOnInit() {
     if (this.conversationId) {
       this.loadOlderMessages(); // Load page 1
@@ -206,7 +212,6 @@ export class MessagesComponent {
 
       this.messageService.clearMessages();
 
-      // this.getMessagesByConversationId(this.conversationId);
       this.conversationService
         .getConversationById(this.conversationId)
         .subscribe({
@@ -215,6 +220,18 @@ export class MessagesComponent {
             this.otherUserData = this.conversationInfo?.members.find(
               (m) => m._id !== this.currentUserId
             );
+
+            // Khi đã biết đối phương, đăng ký lắng nghe trạng thái realtime
+            if (this.otherUserData?._id) {
+              this.socketService.disconnect(
+                'user-status-changed',
+                this.onStatusChanged
+              );
+              this.socketService.connect(
+                'user-status-changed',
+                this.onStatusChanged
+              );
+            }
           },
           error: (err) => {
             console.error('Lỗi khi lấy chi tiết hội thoại: ', err);
@@ -226,7 +243,6 @@ export class MessagesComponent {
         conversationId: this.conversationId,
       });
 
-      // ✅ Gỡ listener cũ trước khi gắn mới
       this.socketService.disconnect('receiveMessage', this.onReceiveMessage);
       this.socketService.connect('receiveMessage', this.onReceiveMessage);
     }

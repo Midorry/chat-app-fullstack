@@ -41,6 +41,14 @@ div i {
   border-bottom: 1px solid #f0f0f0;
 }
 
+.chat-header-left h2 {
+  cursor: default;
+}
+
+.chat-header-left p {
+  cursor: default;
+}
+
 .chat-messages-container {
   height: 100%;
   display: flex;
@@ -98,7 +106,7 @@ div i {
 
 .message-item:not(.my-message) .message-bubble {
   position: relative;
-  padding: 12px;
+  padding: 8px;
   background-color: #dde0ff;
   border-radius: 12px;
   max-width: 60%;
@@ -111,7 +119,7 @@ div i {
 .message-item.my-message .message-bubble {
   color: white;
   position: relative;
-  padding: 12px;
+  padding: 8px;
   background-color: #7778ee;
   border-radius: 12px;
   max-width: 60%;

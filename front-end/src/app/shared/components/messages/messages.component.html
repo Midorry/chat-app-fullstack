@@ -4,7 +4,7 @@
     <div class="chat-header">
       <div class="chat-header-left">
         <h2>{{ otherUserData?.username }}</h2>
-        <p>Online</p>
+        <p>{{ otherUserData?.online ? "Online" : "Offline" }}</p>
       </div>
       <div class="chat-header-right">
         <i nz-icon nzType="search" nzTheme="outline"></i>

@@ -194,7 +194,7 @@ export const getConversationById = async (req, res) => {
 
     const conversation = await conversationModel
       .findById(id)
-      .populate("members", "username email avatar")
+      .populate("members", "username email avatar online")
       .populate("admins", "username email avatar")
       .populate("createdBy", "username email avatar")
       .populate({

@@ -1,5 +1,6 @@
 .message-username {
   color: #525dbb;
+  margin: 0;
 }
 
 .message-image {
@@ -13,16 +14,19 @@
   word-wrap: break-word;
   word-break: break-word;
   white-space: normal;
+  margin: 0;
 }
 
 .message-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
 }
 
 .message-time {
-  font-size: small;
+  font-size: x-small;
+  margin: 0;
+  // color: #8d8d8d;
 }
 
 /* Modal zoom ảnh */

@@ -1,20 +1,36 @@
 import { ObjectId } from "mongodb";
 import Message from "../models/message.model.js";
+import User from "../models/user.model.js";
 
 let ioInstance = null;
+let onlineUsers = new Map();
 
 export const initSocket = (io) => {
   ioInstance = io;
 
   io.on("connection", (socket) => {
-    console.log("🔌 User connected:", socket.id);
+    console.log("User connected:", socket.id);
 
     socket.on("join", ({ userId, conversationId }) => {
       socket.join(conversationId);
-      socket.join(userId); // ✅ Join riêng room user
+      socket.join(userId); // Join riêng room user
       console.log(
         `🔗 User ${socket.id} joined convo ${conversationId} and user ${userId}`
       );
+    });
+
+    socket.on("user-connected", async (userId) => {
+      console.log("User connected:", userId);
+      onlineUsers.set(userId, socket.id);
+
+      // Cập nhật trạng thái online trong DB (nếu cần)
+      await User.findByIdAndUpdate(userId, { online: true });
+
+      // Gửi trạng thái online cho tất cả các user khác
+      socket.broadcast.emit("user-status-changed", {
+        userId: userId,
+        online: true,
+      });
     });
 
     socket.on("sendMessage", async (data) => {
@@ -69,8 +85,22 @@ export const initSocket = (io) => {
       }
     });
 
-    socket.on("disconnect", () => {
-      console.log("User disconnected:", socket.id);
+    socket.on("disconnect", async () => {
+      const userId = [...onlineUsers.entries()].find(
+        ([_, sId]) => sId === socket.id
+      )?.[0];
+
+      if (userId) {
+        onlineUsers.delete(userId);
+
+        await User.findByIdAndUpdate(userId, { online: false });
+
+        // Gửi trạng thái offline cho tất cả user khác
+        socket.broadcast.emit("user-status-changed", {
+          userId: userId,
+          online: false,
+        });
+      }
     });
 
     socket.on("updateUnseenCount", async (userId) => {
