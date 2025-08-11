@@ -1,0 +1,85 @@
+.register-page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: aliceblue;
+}
+
+.register-container {
+  width: 60vw;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.register-left {
+  padding: 40px;
+  order: 1; // desktop: form bên trái
+}
+
+.register-left h1 {
+  text-align: center;
+}
+
+.avatar-uploader {
+  text-align: center;
+}
+
+.register-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ff4d4f;
+  color: white;
+  padding: 40px;
+  text-align: center;
+  order: 2; // desktop: welcome bên phải
+}
+
+.form-input {
+  width: 100%;
+  border-radius: 8px;
+  height: 40px;
+}
+
+.register-btn {
+  width: 100%;
+  // margin-top: 20px;
+}
+
+.login-link {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .register-container {
+    width: 80vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .register-container {
+    width: 95vw;
+  }
+}
+
+/* Mobile: welcome lên trên */
+@media (max-width: 768px) {
+  .register-container {
+    width: 90vw;
+  }
+  .login-link {
+    display: block;
+  }
+  .register-left {
+    padding: 20px;
+  }
+  .register-right {
+    display: none;
+  }
+}

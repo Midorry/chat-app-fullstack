@@ -1,0 +1,81 @@
+.login-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: aliceblue;
+}
+
+.login-container {
+  width: 60vw;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.login-form-section {
+  padding: 40px;
+  order: 1; // desktop: form nằm trước
+}
+
+.login-form-section h1 {
+  text-align: center;
+}
+
+.login-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ff4d4f;
+  color: white;
+  padding: 40px;
+  text-align: center;
+  order: 2; // desktop: welcome nằm sau
+}
+
+.input-control {
+  width: 100%;
+  border-radius: 8px;
+  height: 40px;
+}
+
+.login-btn {
+  width: 100%;
+  //   margin-top: 20px;
+}
+
+.register-link {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .login-container {
+    width: 80vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    width: 95vw;
+  }
+}
+
+/* Khi ở mobile -> đổi thứ tự */
+@media (max-width: 768px) {
+  .login-container {
+    width: 90vw;
+  }
+  .register-link {
+    display: block;
+  }
+  .login-form-section {
+    padding: 20px;
+  }
+  .login-right {
+    display: none;
+  }
+}

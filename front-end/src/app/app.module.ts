@@ -23,6 +23,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
 
 import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
 import { MessageComponent } from './shared/components/message/message.component';
@@ -68,6 +69,7 @@ registerLocaleData(en);
     NzFormModule,
     NzSkeletonModule,
     NzSpinModule,
+    NzUploadModule,
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },

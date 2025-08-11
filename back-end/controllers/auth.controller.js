@@ -10,7 +10,7 @@ const createToken = (user) => {
 
 export const register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { avatar, username, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser)
@@ -18,6 +18,7 @@ export const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
+      avatar,
       username,
       email,
       password: hashedPassword,

@@ -9,6 +9,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzUploadFile, NzUploadXHRArgs } from 'ng-zorro-antd/upload';
+import { Observable, Observer, of, Subscription } from 'rxjs';
 import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { NotificationService } from 'src/app/services/notification.service';
@@ -38,41 +41,62 @@ export class RegisterComponent {
   });
 
   submitForm(): void {
-    if (this.registerForm.valid) {
-      console.log('submit', this.registerForm.value);
-      const userData: User = {
-        username: this.registerForm.value.userName || '',
-        email: this.registerForm.value.email || '',
-        password: this.registerForm.value.password || '',
-      };
+    if (!this.selectedFile) {
+      this.msg.error('Vui lòng chọn ảnh');
+      return;
+    }
 
-      this.authService.register(userData).subscribe({
-        next: (res) => {
-          this.notification.show('Đăng ký thành công', 'success');
-          this.router.navigate(['/login']);
-        },
-        error: (err) => {
-          if (err.status === 400) {
-            this.notification.show(
-              'Email đã được đăng ký, vui lòng dùng email khác',
-              'error'
-            );
-          } else {
-            this.notification.show(
-              'Đăng ký thất bại, vui lòng thử lại',
-              'error'
-            );
-          }
-        },
-      });
-    } else {
+    if (!this.registerForm.valid) {
       Object.values(this.registerForm.controls).forEach((control) => {
         if (control.invalid) {
           control.markAsDirty();
           control.updateValueAndValidity({ onlySelf: true });
         }
       });
+      return;
     }
+
+    // Upload ảnh trước
+    const formData = new FormData();
+    formData.append('image', this.selectedFile);
+
+    this.authService.uploadImage(formData).subscribe({
+      next: (uploadRes: any) => {
+        const imageUrl = uploadRes.url;
+
+        // Sau khi upload thành công thì Đăng ký user
+        const userData: User = {
+          avatar: imageUrl, // dùng link ảnh
+          username: this.registerForm.value.userName || '',
+          email: this.registerForm.value.email || '',
+          password: this.registerForm.value.password || '',
+        };
+
+        this.authService.register(userData).subscribe({
+          next: (res) => {
+            this.notification.show('Đăng ký thành công', 'success');
+            this.router.navigate(['/login']);
+          },
+          error: (err) => {
+            if (err.status === 400) {
+              this.notification.show(
+                'Email đã được đăng ký, vui lòng dùng email khác',
+                'error'
+              );
+            } else {
+              this.notification.show(
+                'Đăng ký thất bại, vui lòng thử lại',
+                'error'
+              );
+            }
+          },
+        });
+      },
+      error: (err) => {
+        this.msg.error('Upload ảnh thất bại');
+        console.error(err);
+      },
+    });
   }
 
   matchOtherValidator(otherControlName: string): ValidatorFn {
@@ -87,11 +111,36 @@ export class RegisterComponent {
         : { confirmMismatch: true };
     };
   }
+  loading: boolean = false;
+  selectedFile!: File;
+  avatarUrl: string | ArrayBuffer | null = null;
+
+  beforeUpload = (file: NzUploadFile): boolean => {
+    // Lưu file để khi submit mới upload
+    this.selectedFile = file as any;
+
+    // Tạo preview bằng FileReader
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.avatarUrl = reader.result;
+    };
+    reader.readAsDataURL(file as any);
+
+    return false; // Chặn upload tự động
+  };
+
+  dummyRequest = (item: NzUploadXHRArgs): Subscription => {
+    // Giả lập request thành công ngay
+    return of(true).subscribe(() => {
+      item.onSuccess!(null, item.file, event);
+    });
+  };
 
   constructor(
     private fb: NonNullableFormBuilder,
     private authService: AuthService,
     private notification: NotificationService,
-    private router: Router
+    private router: Router,
+    private msg: NzMessageService
   ) {}
 }

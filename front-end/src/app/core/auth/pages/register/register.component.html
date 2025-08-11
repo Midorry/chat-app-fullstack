@@ -1,15 +1,7 @@
-<div
-  style="
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: aliceblue;
-  "
->
-  <div style="width: 60vw; background-color: white" nz-row>
-    <div nz-col nzSpan="12" style="padding: 40px">
+<div class="register-page">
+  <div class="register-container" nz-row>
+    <!-- Cột Form -->
+    <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" class="register-left">
       <h1>Đăng ký</h1>
       <form
         nz-form
@@ -18,90 +10,78 @@
         (ngSubmit)="submitForm()"
         nzLayout="vertical"
       >
-        <nz-form-item style="width: 100%">
-          <nz-form-label
-            [nzSm]="12"
-            [nzXs]="24"
-            nzRequired
-            nzFor="userName"
-            style="font-weight: 600"
+        <!-- Upload avatar -->
+        <nz-upload
+          class="avatar-uploader"
+          nzName="avatar"
+          [nzShowUploadList]="false"
+          nzListType="picture-card"
+          [nzBeforeUpload]="beforeUpload"
+          [nzCustomRequest]="dummyRequest"
+        >
+          <ng-container *ngIf="!avatarUrl">
+            <span
+              class="upload-icon"
+              nz-icon
+              [nzType]="loading ? 'loading' : 'plus'"
+            ></span>
+            <div class="ant-upload-text">Upload</div>
+          </ng-container>
+          <img *ngIf="avatarUrl" [src]="avatarUrl" style="width: 100%" />
+        </nz-upload>
+
+        <!-- Tên người dùng -->
+        <nz-form-item class="full-width">
+          <nz-form-label nzRequired nzFor="userName"
             >Tên người dùng</nz-form-label
           >
           <nz-form-control
-            [nzSm]="24"
-            [nzXs]="24"
             [nzErrorTip]="
-              registerForm.get('userName')?.hasError('required') &&
-              (registerForm.get('userName')?.dirty ||
-                registerForm.get('userName')?.touched)
+              registerForm.get('userName')?.hasError('required')
                 ? 'Vui lòng nhập tên người dùng'
-                : registerForm.get('userName')?.hasError('minlength') &&
-                  (registerForm.get('userName')?.dirty ||
-                    registerForm.get('userName')?.touched)
+                : registerForm.get('userName')?.hasError('minlength')
                 ? 'Tên người dùng phải có ít nhất 3 ký tự'
-                : registerForm.get('userName')?.hasError('maxlength') &&
-                  (registerForm.get('userName')?.dirty ||
-                    registerForm.get('userName')?.touched)
+                : registerForm.get('userName')?.hasError('maxlength')
                 ? 'Tên người dùng chỉ có nhiều nhất 10 ký tự'
                 : undefined
             "
-            style="width: 100%"
           >
             <input
               nz-input
               formControlName="userName"
               id="userName"
-              style="width: 100%; border-radius: 8px; height: 40px"
+              class="form-input"
             />
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item style="width: 100%">
-          <nz-form-label
-            [nzSm]="12"
-            [nzXs]="24"
-            nzRequired
-            nzFor="email"
-            style="font-weight: 600"
-            >E-mail</nz-form-label
-          >
+
+        <!-- Email -->
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="email">E-mail</nz-form-label>
           <nz-form-control
-            [nzSm]="24"
-            [nzXs]="24"
             [nzErrorTip]="
               registerForm.get('email')?.hasError('required')
                 ? 'Vui lòng nhập email!'
                 : 'Email không hợp lệ'
             "
-            style="width: 100%"
           >
             <input
               nz-input
               formControlName="email"
               id="email"
-              style="width: 100%; border-radius: 8px; height: 40px"
+              class="form-input"
             />
           </nz-form-control>
         </nz-form-item>
+
+        <!-- Mật khẩu -->
         <nz-form-item>
-          <nz-form-label
-            [nzSm]="12"
-            [nzXs]="24"
-            nzFor="password"
-            nzRequired
-            style="font-weight: 600"
-            >Mật khẩu</nz-form-label
-          >
+          <nz-form-label nzRequired nzFor="password">Mật khẩu</nz-form-label>
           <nz-form-control
-            [nzSm]="24"
-            [nzXs]="24"
             [nzErrorTip]="
-              registerForm.get('password')?.hasError('required') &&
-              (registerForm.get('password')?.dirty ||
-                registerForm.get('password')?.touched)
+              registerForm.get('password')?.hasError('required')
                 ? 'Vui lòng nhập mật khẩu'
-                : registerForm.get('password')?.hasError('minlength') &&
-                  (registerForm.get('password')?.dirty ||
-                    registerForm.get('password')?.touched)
+                : registerForm.get('password')?.hasError('minlength')
                 ? 'Mật khẩu phải có ít nhất 6 ký tự'
                 : undefined
             "
@@ -111,26 +91,19 @@
               type="password"
               id="password"
               formControlName="password"
-              style="width: 100%; border-radius: 8px; height: 40px"
+              class="form-input"
             />
           </nz-form-control>
         </nz-form-item>
+
+        <!-- Xác nhận mật khẩu -->
         <nz-form-item>
-          <nz-form-label
-            [nzSm]="14"
-            [nzXs]="24"
-            nzFor="confirmPassword"
-            nzRequired
-            style="font-weight: 600"
+          <nz-form-label nzRequired nzFor="confirmPassword"
             >Nhập lại mật khẩu</nz-form-label
           >
           <nz-form-control
-            [nzSm]="24"
-            [nzXs]="24"
             [nzErrorTip]="
-              registerForm.get('confirmPassword')?.hasError('required') &&
-              (registerForm.get('confirmPassword')?.dirty ||
-                registerForm.get('confirmPassword')?.touched)
+              registerForm.get('confirmPassword')?.hasError('required')
                 ? 'Vui lòng xác nhận mật khẩu'
                 : registerForm
                     .get('confirmPassword')
@@ -142,36 +115,31 @@
             <input
               nz-input
               type="password"
-              id="confirmpassword"
+              id="confirmPassword"
               formControlName="confirmPassword"
-              style="width: 100%; border-radius: 8px; height: 40px"
+              class="form-input"
             />
           </nz-form-control>
         </nz-form-item>
+
+        <!-- Nút đăng ký -->
         <button
           nzSize="large"
           nz-button
           nzType="primary"
           nzShape="round"
-          class="login-form-button login-form-margin"
-          [nzType]="'primary'"
-          style="width: 100%"
+          class="register-btn"
         >
           Đăng ký
         </button>
+        <p class="login-link">
+          Bạn đã có tài khoản?<a href="/login"> Đăng nhập </a>
+        </p>
       </form>
     </div>
-    <div
-      nz-col
-      nzSpan="12"
-      style="
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background-color: #ff4d4f;
-      "
-    >
+
+    <!-- Cột Welcome -->
+    <div nz-col [nzXs]="24" [nzSm]="24" [nzMd]="12" class="register-right">
       <h1>Chào mừng đến với Todo app</h1>
       <h3>Đã có tài khoản?</h3>
       <button
