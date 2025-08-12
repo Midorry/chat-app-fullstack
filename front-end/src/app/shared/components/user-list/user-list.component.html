@@ -30,7 +30,11 @@
         *ngFor="let user of filteredUsers"
         (click)="selectUserToChat(user._id!)"
       >
-        <nz-avatar nzIcon="user" class="user-avatar"></nz-avatar>
+        <nz-avatar
+          nzIcon="user"
+          [nzSrc]="user.avatar ? localhostBackend + user.avatar : ''"
+          class="user-avatar"
+        ></nz-avatar>
         <span class="user-name">{{ user.username }}</span>
       </div>
     </div>
@@ -67,7 +71,16 @@
     >
       <div class="user-message-row">
         <nz-badge [nzCount]="convo.unseenCount" class="user-badge">
-          <nz-avatar nzShape="square" [nzSize]="48" nzIcon="user"></nz-avatar>
+          <nz-avatar
+            nzShape="square"
+            [nzSize]="48"
+            [nzSrc]="
+              convo.otherMember?.avatar
+                ? localhostBackend + convo.otherMember?.avatar
+                : ''
+            "
+            nzIcon="user"
+          ></nz-avatar>
         </nz-badge>
         <div class="user-info">
           <div class="user-header">
@@ -106,7 +119,12 @@
     >
       <div class="user-message-row">
         <nz-badge [nzCount]="0" class="user-badge">
-          <nz-avatar nzShape="square" [nzSize]="48" nzIcon="user"></nz-avatar>
+          <nz-avatar
+            nzShape="square"
+            [nzSize]="48"
+            [nzSrc]="user.avatar ? localhostBackend + user.avatar : ''"
+            nzIcon="user"
+          ></nz-avatar>
         </nz-badge>
         <div class="user-info">
           <div class="user-header">

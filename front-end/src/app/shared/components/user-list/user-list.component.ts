@@ -26,11 +26,12 @@ export class UserListComponent {
   conversationId = '';
   intervalId: any;
   dataReady = false;
+  localhostBackend = 'http://localhost:3000';
 
   @Output() conversationSelected = new EventEmitter<string>();
 
   private unseenCountCallback = (counts: any) => {
-    // console.log('🔄 Unseen count cập nhật:', counts);
+    // console.log('Unseen count cập nhật:', counts);
     this.ngZone.run(() => {
       this.updateConversationUnseenCount(counts);
     });

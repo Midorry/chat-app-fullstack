@@ -22,7 +22,7 @@ export const sendMessage = async (req, res) => {
       updatedAt: Date.now(), // để hỗ trợ sort theo thời gian hoạt động mới nhất
     });
 
-    await message.populate("senderId", "username");
+    await message.populate("senderId", "username avatar");
 
     const io = getIO();
     io.to(conversationId).emit("receiveMessage", message);

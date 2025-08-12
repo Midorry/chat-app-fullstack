@@ -69,11 +69,11 @@ export class MessageInputComponent {
 
             this.messageService.sendMessage(imageMessage).subscribe({
               next: (savedMessage) => {
-                console.log(savedMessage);
                 this.socketService.emit('sendMessage', savedMessage);
                 this.conversationService.updateConversationOnNewMessage(
                   savedMessage
                 );
+
                 this.conversationService.updateConversationUnseenCount([
                   { conversationId, unseenCount: 0 },
                 ]);
@@ -106,7 +106,6 @@ export class MessageInputComponent {
 
     this.messageService.sendMessage(messagePayload).subscribe({
       next: (res) => {
-        console.log(res);
         this.socketService.emit('sendMessage', res);
         this.conversationService.updateConversationOnNewMessage(res);
         this.conversationService.updateConversationUnseenCount([

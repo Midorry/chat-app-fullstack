@@ -34,6 +34,7 @@ export class MessagesComponent {
   pageSize = 20;
   loading = false;
   allLoaded = false;
+  localhostBackend = 'http://localhost:3000';
 
   private lastScrollHeight: number = 0;
   private isInitialScrollDone = false;
@@ -81,7 +82,7 @@ export class MessagesComponent {
 
   // define callback là method riêng để huỷ dễ hơn
   onReceiveMessage = (newMessage: Message) => {
-    // console.log('not oke: ', newMessage.conversationId);
+    // console.log('not oke: ', newMessage);
     if (newMessage.conversationId === this.conversationId) {
       // console.log('oke');
       this.messageService.addMessage(newMessage);

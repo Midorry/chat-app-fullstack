@@ -20,10 +20,7 @@ export class AppComponent {
   ) {}
 
   ngOnInit() {
-    const currentUserId = this.userService.getLocalUserId();
-    if (currentUserId) {
-      this.socketService.emit('user-connected', currentUserId);
-    }
+    this.socketService.emit('joinAll', this.userService.getLocalUserId);
 
     this.socketService.connect('user-status-changed', this.onUserStatusChanged);
   }

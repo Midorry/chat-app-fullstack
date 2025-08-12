@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import Message from "../models/message.model.js";
+import Conversation from "../models/conversation.model.js";
 import User from "../models/user.model.js";
 
 let ioInstance = null;
@@ -15,45 +16,36 @@ export const initSocket = (io) => {
       socket.join(conversationId);
       socket.join(userId); // Join riêng room user
       console.log(
-        `🔗 User ${socket.id} joined convo ${conversationId} and user ${userId}`
+        `User ${socket.id} joined convo ${conversationId} and user ${userId}`
       );
     });
 
-    socket.on("user-connected", async (userId) => {
-      console.log("User connected:", userId);
-      onlineUsers.set(userId, socket.id);
-
-      // Cập nhật trạng thái online trong DB (nếu cần)
-      await User.findByIdAndUpdate(userId, { online: true });
-
-      // Gửi trạng thái online cho tất cả các user khác
-      socket.broadcast.emit("user-status-changed", {
-        userId: userId,
-        online: true,
+    socket.on("joinAll", async (userId) => {
+      const conversations = await Conversation.find({
+        participants: userId,
+      }).select("_id");
+      conversations.forEach((convo) => {
+        socket.join(convo._id.toString());
       });
+      socket.join(userId); // room riêng cho user
+      // console.log(`User ${userId} joined all conversations and personal room`);
     });
 
     socket.on("sendMessage", async (data) => {
-      const { conversationId, message } = data;
-
+      const { conversationId, _id, senderId, receiverId } = data;
       try {
-        // Lưu tin nhắn vào DB
-        const newMsg = await Message.create(message);
+        const message = await Message.findById(_id);
+        if (!message) return;
 
-        // Gửi message cho người khác trong phòng (ví dụ B đang mở)
-        socket.to(conversationId).emit("receiveMessage", newMsg);
-
-        // Nếu sender đang mở cuộc trò chuyện, đánh dấu họ đã xem
-        if (message.senderId) {
+        // Đánh dấu seen cho người gửi
+        if (senderId) {
           await Message.updateOne(
-            { _id: newMsg._id },
-            { $addToSet: { seenBy: message.senderId } }
+            { _id: message._id },
+            { $addToSet: { seenBy: senderId } }
           );
         }
 
-        // Cập nhật unseenCount và gửi cho receiver
-        const receiverId = message.receiverId;
-
+        // Gửi unseen count cho receiver
         if (receiverId) {
           const unseenCounts = await Message.aggregate([
             {
@@ -77,20 +69,20 @@ export const initSocket = (io) => {
             },
           ]);
 
-          // Gửi dữ liệu unseenCount về đúng socket của receiver
           io.to(receiverId).emit("unseenCountUpdated", unseenCounts);
         }
       } catch (err) {
-        console.error("Error in sendMessage:", err);
+        console.error(err);
       }
     });
 
-    socket.on("disconnect", async () => {
+    socket.on("user-disconnected", async () => {
       const userId = [...onlineUsers.entries()].find(
         ([_, sId]) => sId === socket.id
       )?.[0];
 
       if (userId) {
+        console.log("User disconnected:", userId);
         onlineUsers.delete(userId);
 
         await User.findByIdAndUpdate(userId, { online: false });
@@ -101,6 +93,20 @@ export const initSocket = (io) => {
           online: false,
         });
       }
+    });
+
+    socket.on("user-connected", async (userId) => {
+      console.log("User connected:", userId);
+      onlineUsers.set(userId, socket.id);
+
+      // Cập nhật trạng thái online trong DB (nếu cần)
+      await User.findByIdAndUpdate(userId, { online: true });
+
+      // Gửi trạng thái online cho tất cả các user khác
+      socket.broadcast.emit("user-status-changed", {
+        userId: userId,
+        online: true,
+      });
     });
 
     socket.on("updateUnseenCount", async (userId) => {
@@ -149,7 +155,7 @@ export const initSocket = (io) => {
             $addToSet: { seenBy: objectUserId },
           }
         );
-        console.log("✅ Messages marked as seen:", result.modifiedCount);
+        console.log("Messages marked as seen:", result.modifiedCount);
 
         // Sau khi đánh dấu đã xem xong, cập nhật lại unseenCount cho client
         const unseenCounts = await Message.aggregate([

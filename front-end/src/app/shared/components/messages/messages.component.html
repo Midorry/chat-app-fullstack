@@ -63,6 +63,11 @@
                 class="message-avatar"
                 nzShape="square"
                 [nzSize]="48"
+                [nzSrc]="
+                  message.senderId.avatar
+                    ? localhostBackend + message.senderId.avatar
+                    : ''
+                "
                 nzIcon="user"
               ></nz-avatar>
               <!-- <div *ngFor="let group of groupedMessages">
@@ -103,7 +108,7 @@
 <ng-template #noConversation>
   <div class="chat-container">
     <div class="no-conversation">
-      <p>Select a chat to start messaging</p>
+      <p>Chọn một cuộc trò chuyện để bắt đầu nhắn tin</p>
     </div>
   </div>
 </ng-template>

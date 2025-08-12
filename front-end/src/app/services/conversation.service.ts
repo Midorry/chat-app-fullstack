@@ -102,6 +102,13 @@ export class ConversationService {
       const updatedList = [...current];
       updatedList[index] = updatedConvo;
 
+      // Đưa conversation lên đầu list
+      updatedList.sort((a, b) => {
+        const aTime = new Date(a.lastMessage?.createdAt || 0).getTime();
+        const bTime = new Date(b.lastMessage?.createdAt || 0).getTime();
+        return bTime - aTime;
+      });
+
       this.conversationsSubject.next(updatedList);
     } else {
       // Nếu là cuộc trò chuyện mới thì thêm vào

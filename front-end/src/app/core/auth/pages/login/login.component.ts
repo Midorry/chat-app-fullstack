@@ -10,6 +10,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { SocketService } from 'src/app/services/socket.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -58,6 +60,10 @@ export class LoginComponent {
       next: (res) => {
         localStorage.setItem('userId', JSON.stringify(res.user._id));
         localStorage.setItem('token', res.token);
+        const currentUserId = this.userService.getLocalUserId();
+        if (currentUserId) {
+          this.socketService.emit('user-connected', currentUserId);
+        }
         this.notification.show('Đăng nhập thành công', 'success');
         this.router.navigate(['/welcome']);
       },
@@ -72,7 +78,9 @@ export class LoginComponent {
     private fb: NonNullableFormBuilder,
     private authService: AuthService,
     private router: Router,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private socketService: SocketService,
+    private userService: UserService
   ) {}
   ngOnInit(): void {
     const emailControl = this.loginForm.get('email');
