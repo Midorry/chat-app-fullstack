@@ -2,8 +2,10 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
   NgZone,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
@@ -23,6 +25,9 @@ import { UserService } from 'src/app/services/user.service';
 export class MessagesComponent {
   @Input() conversationId: string | null = null;
   @Input() otherUserId: string | null = null;
+  @Input() selected: boolean = false;
+
+  @Output() removeSelected = new EventEmitter<boolean>();
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
   currentUserId = this.userService.getLocalUserId();
@@ -45,6 +50,10 @@ export class MessagesComponent {
     date: string;
     messages: Message[];
   }[] = [];
+
+  goBack() {
+    this.removeSelected.emit(!this.selected);
+  }
 
   ngAfterViewChecked() {
     // if (!this.hasScrolled) {

@@ -5,6 +5,8 @@ import {
   NgZone,
   Output,
 } from '@angular/core';
+import { Router } from '@angular/router';
+import { distinctUntilChanged, filter } from 'rxjs';
 import { ConversationView } from 'src/app/models/conversationview.model';
 import { User } from 'src/app/models/user.model';
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -27,8 +29,11 @@ export class UserListComponent {
   intervalId: any;
   dataReady = false;
   localhostBackend = 'http://localhost:3000';
+  isSelected = false;
+  checkFillDataConversation = false;
 
   @Output() conversationSelected = new EventEmitter<string>();
+  @Output() selected = new EventEmitter<boolean>();
 
   private unseenCountCallback = (counts: any) => {
     // console.log('Unseen count cập nhật:', counts);
@@ -37,7 +42,18 @@ export class UserListComponent {
     });
   };
 
+  logout() {
+    const currentUserId = this.userService.getLocalUserId();
+    // Xử lý logout
+    localStorage.clear();
+    this.conversationService.clearConversations();
+    this.socketService.emit('user-disconnected', currentUserId);
+    this.router.navigate(['/login']);
+  }
+
   selectConversation(convoId: string) {
+    this.isSelected = true;
+    this.selected.emit(this.isSelected);
     this.conversationSelected.emit(convoId);
     this.conversationId = convoId;
     this.socketService.emit('markAsSeen', {
@@ -48,6 +64,8 @@ export class UserListComponent {
     this.conversationService.markConversationAsSeen(convoId);
   }
   selectUserToChat(userId: string) {
+    this.isSelected = true;
+    this.selected.emit(this.isSelected);
     this.conversationService.startChat(userId).subscribe((convo) => {
       // console.log(convo);
 
@@ -120,9 +138,6 @@ export class UserListComponent {
 
     if (hasUserData || hasConversationData) {
       this.dataReady = true;
-      // console.log('ready:', this.allUser, this.userConversation);
-    } else {
-      // console.log('unready:', this.allUser, this.userConversation);
     }
   }
 
@@ -139,16 +154,29 @@ export class UserListComponent {
       );
     });
 
-    this.conversationService.conversations$.subscribe((conversations) => {
-      this.userConversation = conversations;
-      this.checkDataReady();
-    });
+    this.conversationService.conversations$
+      .pipe(
+        distinctUntilChanged(
+          (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)
+        )
+      )
+      .subscribe((conversations) => {
+        // console.log('Subscriber nhận:', conversations);
 
-    this.fetchUsers();
+        if (conversations.length > 0) {
+          this.userConversation = conversations;
+          this.checkFillDataConversation = true;
+        } else if (!this.checkFillDataConversation) {
+          // Lần đầu tiên không có conversation
+          this.fetchUsers();
+        }
 
-    this.intervalId = setInterval(() => {
-      this.cdr.detectChanges();
-    }, 60000);
+        this.checkDataReady();
+      });
+
+    // this.intervalId = setInterval(() => {
+    //   this.cdr.detectChanges();
+    // }, 60000);
   }
 
   ngOnDestroy(): void {
@@ -156,7 +184,7 @@ export class UserListComponent {
       'unseenCountUpdated',
       this.unseenCountCallback
     );
-    clearInterval(this.intervalId);
+    // clearInterval(this.intervalId);
   }
 
   constructor(
@@ -164,6 +192,7 @@ export class UserListComponent {
     private conversationService: ConversationService,
     private socketService: SocketService,
     private ngZone: NgZone,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 }

@@ -41,6 +41,29 @@ div i {
   border-bottom: 1px solid #f0f0f0;
 }
 
+.chat-header-left {
+  display: flex;
+  align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+  ::ng-deep .chat-header-left button {
+    margin-right: 8px;
+    background-color: #f5f9ff;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  .chat-header-left button {
+    display: block;
+  }
+}
+
+::ng-deep .chat-header-left button {
+  display: none;
+}
+
 .chat-header-left h2 {
   cursor: default;
 }

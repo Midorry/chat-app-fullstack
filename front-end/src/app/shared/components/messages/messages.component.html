@@ -3,8 +3,13 @@
     <!-- Header -->
     <div class="chat-header">
       <div class="chat-header-left">
-        <h2>{{ otherUserData?.username }}</h2>
-        <p>{{ otherUserData?.online ? "Online" : "Offline" }}</p>
+        <button nz-button nzType="default" (click)="goBack()">
+          <span nz-icon nzType="left" nzTheme="outline"></span>
+        </button>
+        <div>
+          <h2>{{ otherUserData?.username }}</h2>
+          <p>{{ otherUserData?.online ? "Online" : "Offline" }}</p>
+        </div>
       </div>
       <div class="chat-header-right">
         <i nz-icon nzType="search" nzTheme="outline"></i>

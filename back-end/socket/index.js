@@ -4,10 +4,13 @@ import Conversation from "../models/conversation.model.js";
 import User from "../models/user.model.js";
 
 let ioInstance = null;
+
 let onlineUsers = new Map();
+const userConnections = new Map();
 
 export const initSocket = (io) => {
   ioInstance = io;
+  let currentUserId = null;
 
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
@@ -18,6 +21,31 @@ export const initSocket = (io) => {
       console.log(
         `User ${socket.id} joined convo ${conversationId} and user ${userId}`
       );
+    });
+
+    // Khi socket disconnect (mất kết nối, đóng tab, tắt trình duyệt...)
+    socket.on("disconnect", async () => {
+      if (currentUserId) {
+        const sockets = userConnections.get(currentUserId);
+        if (sockets) {
+          sockets.delete(socket.id);
+
+          // Nếu không còn socket nào => set offline
+          if (sockets.size === 0) {
+            userConnections.delete(currentUserId);
+            await User.findByIdAndUpdate(currentUserId, { online: false });
+            socket.broadcast.emit("user-status-changed", {
+              userId: currentUserId,
+              online: false,
+            });
+            console.log(`User ${currentUserId} is now offline`);
+          } else {
+            console.log(
+              `User ${currentUserId} closed one tab, still has ${sockets.size} connections`
+            );
+          }
+        }
+      }
     });
 
     socket.on("joinAll", async (userId) => {
@@ -96,17 +124,24 @@ export const initSocket = (io) => {
     });
 
     socket.on("user-connected", async (userId) => {
-      console.log("User connected:", userId);
-      onlineUsers.set(userId, socket.id);
+      currentUserId = userId;
 
-      // Cập nhật trạng thái online trong DB (nếu cần)
-      await User.findByIdAndUpdate(userId, { online: true });
+      if (!userConnections.has(userId)) {
+        userConnections.set(userId, new Set());
+      }
 
-      // Gửi trạng thái online cho tất cả các user khác
-      socket.broadcast.emit("user-status-changed", {
-        userId: userId,
-        online: true,
-      });
+      userConnections.get(userId).add(socket.id);
+
+      // Nếu đây là kết nối đầu tiên => set online
+      if (userConnections.get(userId).size === 1) {
+        await User.findByIdAndUpdate(userId, { online: true });
+        socket.broadcast.emit("user-status-changed", {
+          userId,
+          online: true,
+        });
+      }
+
+      console.log(`User ${userId} connected on socket ${socket.id}`);
     });
 
     socket.on("updateUnseenCount", async (userId) => {

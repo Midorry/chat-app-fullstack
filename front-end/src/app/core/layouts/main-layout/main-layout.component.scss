@@ -27,3 +27,22 @@
   border-bottom-right-radius: 20px;
   height: 100%;
 }
+
+@media screen {
+  @media (max-width: 768px) {
+    .user-list-hidden {
+      display: none;
+    }
+    .messages-container-hidden {
+      display: none;
+    }
+
+    .messages-container {
+      border-radius: 20px;
+    }
+
+    .user-list-container {
+      border-radius: 20px;
+    }
+  }
+}

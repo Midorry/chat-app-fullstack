@@ -8,9 +8,11 @@
       [nzMd]="9"
       [nzLg]="7"
       class="user-list-container"
+      [ngClass]="{ 'user-list-hidden': selected }"
     >
       <app-user-list
         (conversationSelected)="onConversationSelected($event)"
+        (selected)="onSelected($event)"
       ></app-user-list>
     </nz-col>
 
@@ -20,8 +22,13 @@
       [nzMd]="15"
       [nzLg]="17"
       class="messages-container"
+      [ngClass]="{ 'messages-container-hidden': !selected }"
     >
-      <app-messages [conversationId]="selectedConversationId"></app-messages>
+      <app-messages
+        [conversationId]="selectedConversationId"
+        [selected]="selected"
+        (removeSelected)="removeSelected($event)"
+      ></app-messages>
     </nz-col>
   </nz-row>
 </div>

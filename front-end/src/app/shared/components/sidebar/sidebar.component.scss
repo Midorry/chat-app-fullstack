@@ -25,6 +25,12 @@
   box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
 }
 
+@media screen and (max-width: 768px) {
+  .menu-sidebar {
+    display: none;
+  }
+}
+
 .trigger:hover {
   color: #1890ff;
 }
@@ -54,11 +60,15 @@ nz-content {
 
   .logout-button {
     color: #fff;
-    padding: 16px;
+    height: 40px;
+    margin: 16px;
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    border-radius: 100%;
+    width: 40px;
 
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
