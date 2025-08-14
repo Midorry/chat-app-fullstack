@@ -56,47 +56,45 @@
             <div class="top-loading" *ngIf="loading">
               <nz-spin nzSize="small"></nz-spin>
             </div>
-            <div
-              class="message-item"
-              *ngFor="let message of messages$ | async"
-              [ngClass]="{
-                'my-message': message.senderId._id === currentUserId,
-                'other-message': message.senderId._id !== currentUserId
-              }"
-            >
-              <nz-avatar
-                class="message-avatar"
-                nzShape="square"
-                [nzSize]="48"
-                [nzSrc]="
-                  message.senderId.avatar
-                    ? localhostBackend + message.senderId.avatar
-                    : ''
-                "
-                nzIcon="user"
-              ></nz-avatar>
-              <!-- <div *ngFor="let group of groupedMessages">
-                <div class="date-header">{{ group.date }}</div>
-  
-                <ng-container *ngFor="let msg of group.messages">
-                  <app-message
-                    class="message-bubble"
-                    [content]="msg.content"
-                    [username]="msg.senderId.username"
-                    [userId]="msg.senderId._id"
-                    [sendTime]="msg.createdAt"
-                  ></app-message>
-                </ng-container>
-              </div> -->
-              <app-message
-                class="message-bubble"
-                [content]="message.content"
-                [type]="message.type"
-                [attachments]="message.attachments"
-                [username]="message.senderId.username"
-                [userId]="message.senderId._id"
-                [sendTime]="message.createdAt"
-              ></app-message>
+
+            <!-- Group theo ngày -->
+            <div *ngFor="let group of groupedMessages">
+              <div class="date-header">
+                <p></p>
+                {{ group.date }}
+                <p></p>
+              </div>
+
+              <div
+                class="message-item"
+                *ngFor="let msg of group.messages"
+                [ngClass]="{
+                  'my-message': msg.senderId._id === currentUserId,
+                  'other-message': msg.senderId._id !== currentUserId
+                }"
+              >
+                <nz-avatar
+                  class="message-avatar"
+                  nzShape="square"
+                  [nzSize]="48"
+                  [nzSrc]="
+                    msg.senderId.avatar
+                      ? localhostBackend + msg.senderId.avatar
+                      : ''
+                  "
+                  nzIcon="user"
+                ></nz-avatar>
+
+                <app-message
+                  class="message-bubble"
+                  [content]="msg.content"
+                  [username]="msg.senderId.username"
+                  [type]="msg.type"
+                  [attachments]="msg.attachments"
+                  [userId]="msg.senderId._id"
+                  [sendTime]="msg.createdAt"
+                ></app-message>
+              </div>
             </div>
           </div>
         </ng-template>

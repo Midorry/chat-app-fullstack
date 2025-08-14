@@ -58,6 +58,26 @@ div i {
   .chat-header-left button {
     display: block;
   }
+
+  .chat-header-left h2 {
+    font-size: medium;
+  }
+
+  .chat-header-left p {
+    font-size: smaller;
+  }
+
+  .chat-header-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 18px;
+  }
+
+  .chat-header-right i {
+    font-size: 16px;
+    margin: 0;
+  }
 }
 
 ::ng-deep .chat-header-left button {
@@ -117,6 +137,21 @@ div i {
   justify-content: flex-end; // Tin nhắn dồn xuống đáy
   gap: 8px;
   background-color: #f5f9ff;
+}
+
+.date-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  gap: 8px;
+  color: #878787;
+}
+
+.date-header p {
+  width: 100%;
+  height: 1px;
+  background-color: #878787;
 }
 
 .message-item:not(.my-message) .message-avatar {

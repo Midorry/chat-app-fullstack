@@ -44,7 +44,7 @@ export class ConversationService {
   /*Cập nhật danh sách conversation khi có tin nhắn mới */
   updateConversationOnNewMessage(newMessage: Message): void {
     const currentConversations = this.conversationsSubject.getValue();
-    console.log(newMessage);
+    // console.log(newMessage);
 
     const updatedConversationIndex = currentConversations.findIndex(
       (c) => c._id === newMessage.conversationId
@@ -64,7 +64,7 @@ export class ConversationService {
           (_, i) => i !== updatedConversationIndex
         ),
       ];
-      console.log(newConversations);
+      // console.log(newConversations);
 
       this.conversationsSubject.next(newConversations);
     }

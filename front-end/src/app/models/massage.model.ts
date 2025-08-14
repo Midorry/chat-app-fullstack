@@ -7,4 +7,5 @@ export interface Message {
   attachments?: string[];
   seenBy?: string[];
   createdAt?: string;
+  updatedAt?: string;
 }

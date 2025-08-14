@@ -167,6 +167,7 @@ export class UserListComponent {
           this.userConversation = conversations;
           this.checkFillDataConversation = true;
         } else if (!this.checkFillDataConversation) {
+          // console.log('fetch user');
           // Lần đầu tiên không có conversation
           this.fetchUsers();
         }

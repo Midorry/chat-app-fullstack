@@ -160,17 +160,23 @@ export class MessagesComponent {
   ): { date: string; messages: Message[] }[] {
     const grouped = new Map<string, Message[]>();
 
+    // Sort tin nhắn trước khi group để đảm bảo thứ tự
+    messages.sort(
+      (a, b) =>
+        new Date(a.updatedAt!).getTime() - new Date(b.updatedAt!).getTime()
+    );
+
     messages.forEach((msg) => {
-      const date = this.formatDateLabel(new Date(msg.createdAt!)); // convert timestamp thành chuỗi ngày phù hợp
+      const date = this.formatDateLabel(new Date(msg.updatedAt!));
       if (!grouped.has(date)) {
         grouped.set(date, []);
       }
       grouped.get(date)!.push(msg);
     });
 
-    return Array.from(grouped.entries()).map(([date, messages]) => ({
+    return Array.from(grouped.entries()).map(([date, msgs]) => ({
       date,
-      messages,
+      messages: msgs,
     }));
   }
 
