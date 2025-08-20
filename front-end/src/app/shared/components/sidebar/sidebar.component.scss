@@ -27,7 +27,13 @@
 
 @media screen and (max-width: 768px) {
   .menu-sidebar {
-    display: none;
+    // display: none;
+    width: 40px;
+    min-width: 40px !important;
+    max-width: 40px !important;
+  }
+  .logout-button {
+    margin: 0px !important;
   }
 }
 
@@ -43,6 +49,10 @@ nz-content {
   padding: 24px;
   background-color: var(--bg-color);
   height: 100%;
+}
+
+.avatar-uploader {
+  text-align: center;
 }
 
 .menu-sidebar {

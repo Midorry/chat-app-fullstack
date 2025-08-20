@@ -19,11 +19,4 @@ export class AuthService {
   register(userData: any): Observable<User> {
     return this.http.post<User>(`${this.apiUrl}/auth/register`, userData);
   }
-
-  uploadImage(formData: FormData): Observable<{ url: string }> {
-    return this.http.post<{ url: string }>(
-      `http://localhost:3000/api/upload`,
-      formData
-    );
-  }
 }

@@ -14,7 +14,6 @@ import conversationRoutes from "./routes/conversation.routes.js";
 import messageRoutes from "./routes/message.routes.js";
 import uploadRouter from "./routes/upload.routes.js";
 import { connectDB } from "./config/db.js";
-// các routes khác...
 
 dotenv.config();
 connectDB();
@@ -43,7 +42,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/messages", messageRoutes);
-// các route khác...
 
 // Socket
 initSocket(io);

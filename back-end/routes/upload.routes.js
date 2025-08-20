@@ -1,33 +1,44 @@
 import { Router } from "express";
 import multer from "multer";
-import path from "path";
-import { fileURLToPath } from "url";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import cloudinary from "../config/cloudinary.js";
 
 const router = Router();
 
-// Nếu dùng ES Module thì cần xử lý __dirname như sau:
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Cấu hình nơi lưu file
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../uploads")); // thư mục upload
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const filename = `${Date.now()}-${file.fieldname}${ext}`;
-    cb(null, filename);
+// Cấu hình lưu trữ trên Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "uploads", // lưu vào thư mục uploads
+    allowed_formats: ["jpg", "jpeg", "png"],
+    public_id: (req, file) => {
+      // tạo tên file duy nhất
+      return Date.now() + "-" + file.originalname.split(".")[0];
+    },
   },
 });
 
 const upload = multer({ storage });
 
 router.post("/upload", upload.single("image"), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-  const imageUrl = `/uploads/${req.file.filename}`;
-  res.json({ url: imageUrl });
+    res.json({ url: req.file.path });
+  } catch (error) {
+    console.error("Upload error object:", error);
+    console.error("Upload error message:", error.message);
+    console.error("Upload error stack:", error.stack);
+
+    // Trường hợp Cloudinary trả về error chi tiết
+    if (error.http_code || error.name || error.response) {
+      console.error("Upload error details:", JSON.stringify(error, null, 2));
+    }
+
+    res.status(500).json({ error: error.message || "Upload failed" });
+  }
 });
 
 export default router;

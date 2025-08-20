@@ -15,6 +15,7 @@ import { Observable, Observer, of, Subscription } from 'rxjs';
 import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { UploadService } from 'src/app/services/upload.service';
 
 @Component({
   selector: 'app-register',
@@ -22,6 +23,9 @@ import { NotificationService } from 'src/app/services/notification.service';
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent {
+  loading: boolean = false;
+  selectedFile!: File;
+  avatarUrl: string | ArrayBuffer | null = null;
   registerForm: FormGroup<{
     userName: FormControl<string>;
     email: FormControl<string>;
@@ -60,7 +64,7 @@ export class RegisterComponent {
     const formData = new FormData();
     formData.append('image', this.selectedFile);
 
-    this.authService.uploadImage(formData).subscribe({
+    this.uploadService.uploadImage(formData).subscribe({
       next: (uploadRes: any) => {
         const imageUrl = uploadRes.url;
 
@@ -111,9 +115,6 @@ export class RegisterComponent {
         : { confirmMismatch: true };
     };
   }
-  loading: boolean = false;
-  selectedFile!: File;
-  avatarUrl: string | ArrayBuffer | null = null;
 
   beforeUpload = (file: NzUploadFile): boolean => {
     // Lưu file để khi submit mới upload
@@ -139,6 +140,7 @@ export class RegisterComponent {
   constructor(
     private fb: NonNullableFormBuilder,
     private authService: AuthService,
+    private uploadService: UploadService,
     private notification: NotificationService,
     private router: Router,
     private msg: NzMessageService

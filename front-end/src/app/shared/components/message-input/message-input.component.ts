@@ -3,6 +3,7 @@ import { Message } from 'src/app/models/massage.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { MessageService } from 'src/app/services/message.service';
 import { SocketService } from 'src/app/services/socket.service';
+import { UploadService } from 'src/app/services/upload.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -55,7 +56,7 @@ export class MessageInputComponent {
       formData.append('image', this.selectedFile);
 
       try {
-        this.messageService.uploadImage(formData).subscribe((res) => {
+        this.uploadService.uploadImage(formData).subscribe((res) => {
           if (res && res.url) {
             const imageMessage: Message = {
               conversationId: conversationId,
@@ -125,6 +126,7 @@ export class MessageInputComponent {
 
   constructor(
     private messageService: MessageService,
+    private uploadService: UploadService,
     private userService: UserService,
     private conversationService: ConversationService,
     private socketService: SocketService

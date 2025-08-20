@@ -24,6 +24,8 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
 import { MessageComponent } from './shared/components/message/message.component';
@@ -70,6 +72,8 @@ registerLocaleData(en);
     NzSkeletonModule,
     NzSpinModule,
     NzUploadModule,
+    NzModalModule,
+    NzToolTipModule,
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },

@@ -32,7 +32,7 @@
       >
         <nz-avatar
           nzIcon="user"
-          [nzSrc]="user.avatar ? localhostBackend + user.avatar : ''"
+          [nzSrc]="user.avatar ? user.avatar : ''"
           class="user-avatar"
         ></nz-avatar>
         <span class="user-name">{{ user.username }}</span>
@@ -74,11 +74,7 @@
           <nz-avatar
             nzShape="square"
             [nzSize]="48"
-            [nzSrc]="
-              convo.otherMember?.avatar
-                ? localhostBackend + convo.otherMember?.avatar
-                : ''
-            "
+            [nzSrc]="convo.otherMember?.avatar ? convo.otherMember?.avatar : ''"
             nzIcon="user"
           ></nz-avatar>
         </nz-badge>
@@ -122,7 +118,7 @@
           <nz-avatar
             nzShape="square"
             [nzSize]="48"
-            [nzSrc]="user.avatar ? localhostBackend + user.avatar : ''"
+            [nzSrc]="user.avatar ? user.avatar : ''"
             nzIcon="user"
           ></nz-avatar>
         </nz-badge>
@@ -135,6 +131,7 @@
     </div>
   </ng-template>
 </div>
-<div class="logout-button" (click)="logout()">
+
+<!-- <div class="logout-button" (click)="logout()">
   <i nz-icon nzType="logout"></i>
-</div>
+</div> -->

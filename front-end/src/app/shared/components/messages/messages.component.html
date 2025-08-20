@@ -77,11 +77,7 @@
                   class="message-avatar"
                   nzShape="square"
                   [nzSize]="48"
-                  [nzSrc]="
-                    msg.senderId.avatar
-                      ? localhostBackend + msg.senderId.avatar
-                      : ''
-                  "
+                  [nzSrc]="msg.senderId.avatar ? msg.senderId.avatar : ''"
                   nzIcon="user"
                 ></nz-avatar>
 

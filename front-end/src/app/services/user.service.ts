@@ -36,4 +36,8 @@ export class UserService {
       this.usersSubject.next([...users]);
     }
   }
+
+  updateUser(userData: any): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/update`, userData);
+  }
 }

@@ -4,7 +4,7 @@
   <!-- Nếu là tin nhắn hình ảnh -->
   <ng-container *ngIf="type === 'image'; else textMessage">
     <img
-      [src]="localhostBackEnd + attachments?.[0]"
+      [src]="attachments?.[0]"
       alt="image message"
       class="message-image"
       (click)="openImageModal(localhostBackEnd + attachments?.[0])"

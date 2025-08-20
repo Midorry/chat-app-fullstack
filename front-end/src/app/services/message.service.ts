@@ -59,13 +59,6 @@ export class MessageService {
     this.messagesSubject.next([]);
   }
 
-  uploadImage(formData: FormData): Observable<{ url: string }> {
-    return this.http.post<{ url: string }>(
-      `http://localhost:3000/api/upload`,
-      formData
-    );
-  }
-
   addMessageToStore(message: Message) {
     const current = this.messagesSubject.value;
     this.messagesSubject.next([...current, message]);

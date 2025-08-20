@@ -1,7 +1,6 @@
 <nz-sider
   class="menu-sidebar"
   nzCollapsible
-  nzWidth="256px"
   [nzCollapsed]="true"
   [nzTrigger]="null"
 >
@@ -13,8 +12,22 @@
       [nzInlineCollapsed]="true"
       class="menu-list"
     >
-      <li nz-submenu nzTitle="Cá nhân" nzIcon="dashboard"></li>
-      <!-- Thêm các item khác nếu cần -->
+      <!-- <li
+        nz-submenu
+        nzTooltipTitle="Cá nhân"
+        nz-tooltip
+        nzTitle="Cá nhân"
+        nzIcon="dashboard"
+        nzTooltipPlacement="right"
+      ></li> -->
+      <li
+        nz-submenu
+        nzIcon="user"
+        nzTooltipTitle="Hồ sơ"
+        nzTooltipPlacement="right"
+        nz-tooltip
+        (click)="openProfileDialog()"
+      ></li>
     </ul>
 
     <div class="logout-button" (click)="logout()">
