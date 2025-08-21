@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "ng build --configuration production --base-href 'https://midorry.github.io/chat-app-fulstack/' && npx angular-cli-ghpages --dir=dist/chat-app"
   },
   "private": true,
   "dependencies": {
