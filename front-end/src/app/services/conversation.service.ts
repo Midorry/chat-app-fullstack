@@ -4,10 +4,12 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Conversation } from '../models/conversation.model';
 import { ConversationView } from '../models/conversationview.model';
 import { Message } from '../models/massage.model';
+import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ConversationService {
-  private apiUrl = 'http://localhost:3000/api/conversations';
+  // private apiUrl = 'http://localhost:3000/api/conversations';
+  private apiUrl = `${environment.apiUrl}/api/conversations`;
 
   // Subject để lưu trữ và cập nhật danh sách
   private conversationsSubject = new BehaviorSubject<ConversationView[]>([]);

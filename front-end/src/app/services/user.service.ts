@@ -2,10 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/user.model';
+import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private apiUrl = 'http://localhost:3000/api/users';
+  // private apiUrl = 'http://localhost:3000/api/users';
+  private apiUrl = `${environment.apiUrl}/api/users`;
 
   // Bộ nhớ tạm lưu danh sách users
   private usersSubject = new BehaviorSubject<User[]>([]);

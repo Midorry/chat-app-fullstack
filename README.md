@@ -44,10 +44,10 @@ bảo nhắn tin thời gian thực.
 ### Frontend
 
 ```
-/client
+/front-end
  ├── src/app
- │    ├── auth/         # Đăng nhập/Đăng ký
- │    ├── chat/         # Màn hình chat
+ │    ├── core/         # Đăng nhập/Đăng ký/Màn hình chính
+ │    ├── models/       # Định nghĩa Models
  │    ├── services/     # Giao tiếp API & Socket
  │    └── shared/       # Component dùng chung
 ```
@@ -55,7 +55,7 @@ bảo nhắn tin thời gian thực.
 ### Backend
 
 ```
-/server
+/back-end
  ├── models/            # Mongoose models (User, Message, Conversation)
  ├── routes/            # REST APIs
  ├── controllers/       # Xử lý logic
@@ -105,29 +105,21 @@ Truy cập: `http://localhost:4200`
 - `POST /api/auth/register` – Đăng ký
 - `POST /api/auth/login` – Đăng nhập
 - `GET /api/users/search?keyword=` – Tìm kiếm user
-- `POST /api/messages/:conversationId` – Gửi tin nhắn
+- `POST /api/messages/` – Gửi tin nhắn
 - `GET /api/messages/:conversationId` – Lấy danh sách tin nhắn
 
 ---
 
 ## 🔔 Socket.IO Events
 
-| Event            | Description              |
-| ---------------- | ------------------------ |
-| `join`           | Join vào phòng chat      |
-| `sendMessage`    | Gửi tin nhắn             |
-| `receiveMessage` | Nhận tin nhắn            |
-| `userOnline`     | User online              |
-| `userOffline`    | User offline             |
-| `unreadCount`    | Cập nhật số tin chưa đọc |
-
----
-
-## 📸 Screenshots
-
-_(Thêm ảnh giao diện vào đây để repo đẹp hơn)_
-
----
+| Event               | Description              |
+| ------------------- | ------------------------ |
+| `join`              | Join vào phòng chat      |
+| `sendMessage`       | Gửi tin nhắn             |
+| `receiveMessage`    | Nhận tin nhắn            |
+| `user-connected`    | User online              |
+| `user-disconnected` | User offline             |
+| `updateUnseenCount` | Cập nhật số tin chưa đọc |
 
 ## 🚀 Hướng phát triển
 
