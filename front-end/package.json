@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "deploy": "ng build --configuration production --base-href 'https://midorry.github.io/chat-app-fullstack/' && npx angular-cli-ghpages --dir=dist/chat-app"
