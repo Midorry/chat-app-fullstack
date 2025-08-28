@@ -9,14 +9,10 @@ import { LoginGuard } from './core/auth/guards/login.guard';
 const routes: Routes = [
   {
     path: '',
-    component: MainLayoutComponent,
-    canActivate: [AuthGuard],
-    // children: [
-    //   // { path: 'chat', component: ChatPageComponent },
-    //   // { path: 'profile', component: ProfilePageComponent },
-    //   // { path: '', redirectTo: 'chat', pathMatch: 'full' }
-    // ],
+    pathMatch: 'full',
+    redirectTo: 'home',
   },
+  { path: 'home', component: MainLayoutComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
   { path: 'register', component: RegisterComponent },
   { path: '**', redirectTo: '' }, // fallback

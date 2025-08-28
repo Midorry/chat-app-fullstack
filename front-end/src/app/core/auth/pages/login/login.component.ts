@@ -45,7 +45,6 @@ export class LoginComponent {
     }
     form.updateValueAndValidity(); // cập nhật lại trạng thái
 
-    // ✅ Đánh dấu đã chạm
     form.markAllAsTouched();
 
     if (form.invalid) {
@@ -65,7 +64,7 @@ export class LoginComponent {
           this.socketService.emit('user-connected', currentUserId);
         }
         this.notification.show('Đăng nhập thành công', 'success');
-        this.router.navigate(['/welcome']);
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         console.error('Đăng nhập lỗi:', err);

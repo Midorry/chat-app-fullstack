@@ -11,7 +11,7 @@ export class LoginGuard implements CanActivate {
     const token = localStorage.getItem('token');
     if (token) {
       // Nếu đã đăng nhập, chuyển hướng về trang chủ
-      return this.router.parseUrl('');
+      return this.router.parseUrl('/home');
     }
     return true; // cho vào login nếu chưa có token
   }
