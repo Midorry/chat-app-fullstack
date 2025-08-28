@@ -5,7 +5,6 @@ import {
   FormGroup,
   NonNullableFormBuilder,
   ValidationErrors,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,7 +12,6 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzUploadFile, NzUploadXHRArgs } from 'ng-zorro-antd/upload';
 import { of, Subscription } from 'rxjs';
 import { User } from 'src/app/models/user.model';
-import { AuthService } from 'src/app/services/auth.service';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { SocketService } from 'src/app/services/socket.service';
@@ -26,7 +24,7 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-  registerForm: FormGroup<{
+  updateForm: FormGroup<{
     userName: FormControl<string>;
     email: FormControl<string>;
     password: FormControl<string>;
@@ -59,18 +57,18 @@ export class SidebarComponent {
     const password = control.get('password')?.value;
     const confirmPassword = control.get('confirmPassword')?.value;
 
-    // Nếu không nhập password → không cần check confirmPassword
+    // Nếu không nhập password thì không cần check confirmPassword
     if (!password && !confirmPassword) {
       return null;
     }
 
-    // Nếu có password mà không có confirmPassword → báo lỗi
+    // Nếu có password mà không có confirmPassword thì báo lỗi
     if (password && !confirmPassword) {
       control.get('confirmPassword')?.setErrors({ required: true });
       return { requiredConfirm: true };
     }
 
-    // Nếu confirmPassword khác password → báo lỗi
+    // Nếu confirmPassword khác password thì báo lỗi
     if (password !== confirmPassword) {
       control.get('confirmPassword')?.setErrors({ mismatch: true });
       return { mismatch: true };
@@ -78,19 +76,6 @@ export class SidebarComponent {
 
     return null;
   }
-
-  // matchOtherValidator(otherControlName: string): ValidatorFn {
-  //   return (control: AbstractControl): ValidationErrors | null => {
-  //     if (!control.parent) return null;
-
-  //     const otherControl = control.parent.get(otherControlName);
-  //     if (!otherControl) return null;
-
-  //     return control.value === otherControl.value
-  //       ? null
-  //       : { confirmMismatch: true };
-  //   };
-  // }
 
   beforeUpload = (file: NzUploadFile): boolean => {
     // Lưu file để khi submit mới upload
@@ -119,8 +104,8 @@ export class SidebarComponent {
     //   return;
     // }
 
-    if (!this.registerForm.valid) {
-      Object.values(this.registerForm.controls).forEach((control) => {
+    if (!this.updateForm.valid) {
+      Object.values(this.updateForm.controls).forEach((control) => {
         if (control.invalid) {
           control.markAsDirty();
           control.updateValueAndValidity({ onlySelf: true });
@@ -133,54 +118,82 @@ export class SidebarComponent {
     const formData = new FormData();
     formData.append('image', this.selectedFile);
     console.log(this.selectedFile);
+    if (this.selectedFile) {
+      this.uploadService.uploadImage(formData).subscribe({
+        next: (uploadRes: any) => {
+          const imageUrl = uploadRes.url;
 
-    this.uploadService.uploadImage(formData).subscribe({
-      next: (uploadRes: any) => {
-        const imageUrl = uploadRes.url;
+          // Sau khi upload thành công thì Đăng ký user
+          const userData: User = {
+            avatar: imageUrl, // dùng link ảnh
+            username: this.updateForm.value.userName || '',
+            email: this.updateForm.value.email || '',
+            password: this.updateForm.value.password || '',
+          };
 
-        // Sau khi upload thành công thì Đăng ký user
-        const userData: User = {
-          avatar: imageUrl, // dùng link ảnh
-          username: this.registerForm.value.userName || '',
-          email: this.registerForm.value.email || '',
-          password: this.registerForm.value.password || '',
-        };
+          this.userService.updateUser(userData).subscribe({
+            next: (res) => {
+              this.notification.show('Cập nhật thành công', 'success');
 
-        this.userService.updateUser(userData).subscribe({
-          next: (res) => {
-            this.notification.show('Cập nhật thành công thành công', 'success');
+              this.isVisible = false;
+            },
+            error: (err) => {
+              if (err.status === 400) {
+                this.notification.show(
+                  'Email đã được sử dụng, vui lòng dùng email khác',
+                  'error'
+                );
+              } else {
+                this.notification.show(
+                  'Cập nhật thất bại, vui lòng thử lại',
+                  'error'
+                );
+              }
+            },
+          });
+        },
+        error: (err) => {
+          this.msg.error('Upload ảnh thất bại');
+          console.error(err);
+        },
+      });
+    } else {
+      const userData: User = {
+        avatar: (this.avatarUrl as string) || undefined, // dùng link ảnh
+        username: this.updateForm.value.userName || '',
+        email: this.updateForm.value.email || '',
+        password: this.updateForm.value.password || '',
+      };
 
-            this.isVisible = false;
-            this.router.navigate(['/login']);
-          },
-          error: (err) => {
-            if (err.status === 400) {
-              this.notification.show(
-                'Email đã được sử dụng, vui lòng dùng email khác',
-                'error'
-              );
-            } else {
-              this.notification.show(
-                'Cập nhật thất bại, vui lòng thử lại',
-                'error'
-              );
-            }
-          },
-        });
-      },
-      error: (err) => {
-        this.msg.error('Upload ảnh thất bại');
-        console.error(err);
-      },
-    });
+      this.userService.updateUser(userData).subscribe({
+        next: (res) => {
+          this.notification.show('Cập nhật thành công', 'success');
+
+          this.isVisible = false;
+        },
+        error: (err) => {
+          if (err.status === 400) {
+            this.notification.show(
+              'Email đã được sử dụng, vui lòng dùng email khác',
+              'error'
+            );
+          } else {
+            this.notification.show(
+              'Cập nhật thất bại, vui lòng thử lại',
+              'error'
+            );
+          }
+        },
+      });
+    }
   }
 
   openProfileDialog(): void {
     this.userService.getUserById(this.userId || '').subscribe({
       next: (res) => {
-        console.log(res);
+        // console.log(res);
         this.avatarUrl = res?.avatar || '';
-        this.registerForm.patchValue({
+        this.updateForm.patchValue({
           // avatar: res.avatar,
           userName: res.username,
           email: res.email,

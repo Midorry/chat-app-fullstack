@@ -37,6 +37,16 @@ bảo nhắn tin thời gian thực.
 - [Multer](https://github.com/expressjs/multer) (upload file)
 - [JWT](https://jwt.io/) (xác thực)
 
+### 🌐 Demo
+
+🔗 **Link Deploy**:
+[Chat App Realtime](https://chat-app-production-623f.up.railway.app/login)
+
+| Email           | Mật khẩu | Ghi chú          |
+| --------------- | -------- | ---------------- |
+| use@gmail.com   | user123  | Tài khoản demo 1 |
+| tam@example.com | tam123   | Tài khoản demo 2 |
+
 ---
 
 ## 📂 Cấu trúc dự án
@@ -84,8 +94,8 @@ File `.env`:
 
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/chatapp
-JWT_SECRET=your_jwt_secret
+MONGO_URI=mongodb://localhost:27017/chat_app
+JWT_SECRET=4f92d17f1c83a93a8de76fbb04f0ac72f12a4d5c89b3e6af5c07e83d02b8f6cd
 ```
 
 ### Frontend
